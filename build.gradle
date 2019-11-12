@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+}
+apply plugin: "java"
+
+sourceCompatibility = 1.8
+sourceSets.main.java.srcDirs = ["src"]
+sourceSets.main.resources.srcDirs = ["assets"]
+
+group 'ntt.leet.core.main'
+version '1.00'
+
+
+project.ext.mainClassName = "main.Main"
+
+dependencies{
+    implementation fileTree(dir: 'libs', include: '*.jar')
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'ntt.leet.core.Main'
+        )
+    }
+    compileJava.options.encoding = 'UTF-8'
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+}
+
+task buildJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version,
+                'Main-Class': 'main.Main'
+    }
+    compileJava.options.encoding = 'UTF-8'
+    baseName = 'soft'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
