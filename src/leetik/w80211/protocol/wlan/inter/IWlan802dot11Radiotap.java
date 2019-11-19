@@ -1,6 +1,6 @@
 package leetik.w80211.protocol.wlan.inter;
 
-import fr.bmartel.protocol.radiotap.inter.IRadioTapFrame;
+import leetik.w80211.protocol.radiotap.inter.IRadioTapFrame;
 import leetik.w80211.protocol.wlan.frame.IWlanFrame;
 
 /**

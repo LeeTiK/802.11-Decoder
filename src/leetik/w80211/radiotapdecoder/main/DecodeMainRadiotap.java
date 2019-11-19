@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package leetik.w80211.wlandecoder;
+package leetik.w80211.radiotapdecoder.main;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,41 +32,59 @@ import java.util.ArrayList;
 import fr.bmartel.pcapdecoder.PcapDecoder;
 import fr.bmartel.pcapdecoder.structure.types.inter.IEnhancedPacketBLock;
 import fr.bmartel.pcapdecoder.utils.DecoderStatus;
-import leetik.w80211.protocol.wlan.WlanDecoder;
-import leetik.w80211.protocol.wlan.inter.IWlan802dot11Radiotap;
+import leetik.w80211.protocol.radiotap.RadioTap;
+import leetik.w80211.protocol.radiotap.inter.IRadioTapFrame;
+import leetik.w80211.utils.RadioTapException;
 
 /**
- * @mainpage  WLAN 802.11 JAVA DECODER
+ * @mainpage  PCAP NG JAVA File parser
  *
- *Decoder for Wlan 802.11 frame preceding with Radiotap header or not
+ * <b>COMMAND LINE SYNTAX</b> 
 
- Radiotap header are parsed with project http://bertrandmartel.github.io/pcapng-decoder-java/
+java -cp ../lib/pcapngdecoder-1.0.jar:radiotapdecoder-1.0.jar  leetik.w80211.radiotapdecoder.main.DecodeMainRadiotap -f ../radiotap_file/exemple.pcapng  -v
 
- All type of Wlan 802.11 frames are parsed :
- * MANAGEMENT_FRAME_TYPE
- * CONTROL_FRAME_TYPE
- * DATA_FRAME_TYPE
+-f <file.pcapng> : input file
 
- But there are a few of "information element" block parsed for now (tagged parameters) :
- * SSID
- * HT CAPABILITIES
- * SUPPORTED RATE
- * TIM
- * EXTENDED SUPPORTED RATE
- * ERP
- * DSSS PARAMETER
- * 
+-v               : verbose, will show all section parsing content
+
+This exemple is launched from release folder
+
+<hr/>
+
+<b>PROGRAM SYNTAX</b>
+
+``byte[] radioTapData = packet.getPacketData();``
+
+``RadioTap radioTap = new RadioTap(radioTapData);``
+
+You can then look at all fields that are in the radiotap data with ``radioTap.getRadioTapFlagList()``
+
+Go check ``IRadiotapFlags`` interface to see all list.
+
+``radioTap.getRadioTapFlagList().getRadioTapData()`` will give you all the data you can grab according to flags above.
+
+Go check ``IRadiotapData`` to see all data available.
+
+<hr/>
+
+* Project is JRE 1.7 compliant
+* You can build it with ant => build.xml
+* Development on Eclipse 
+* Specification from http://www.radiotap.org
+* 
  */
 /**
- * Start WLAN decoder
+ * <b>Main function for Radiotap decoder frame</b>
+ * 
+ * <p>Specifications can be found on http://www.radiotap.org/</p>
  * 
  * @author Bertrand Martel
  * 
  */
-public class DecodeMain {
+public class DecodeMainRadiotap {
 
 	/**
-	 * Start WLAN decoder
+	 * Start Radiotap frame decoder
 	 * 
 	 * @param args
 	 * @throws InterruptedException
@@ -76,69 +94,86 @@ public class DecodeMain {
 
 		long startTime = System.currentTimeMillis();
 		boolean verbose = false;
-
+		
 		if (args.length > 1) {
-
-			byte[] dataFromFile = new byte[] {};
-
-			if (args[0].equals("-f")) {
+			
+			byte[] dataFromFile= new byte[]{};
+			
+			if (args[0].equals("-f"))
+			{
 				dataFromFile = readFile(args[1]);
-				if (args.length > 2 && args[2].equals("-v")) {
-					verbose = true;
+				if (args.length>2 && args[2].equals("-v"))
+				{
+					verbose=true;
 				}
-			} else if (args[0].equals("-v")) {
-				verbose = true;
-				if (args.length > 2) {
+			}
+			else if (args[0].equals("-v"))
+			{
+				verbose=true;
+				if (args.length>2)
+				{
 					if (args[1].equals("-f"))
 						dataFromFile = readFile(args[2]);
-					else {
+					else
+					{
 						System.err.println("Insufficient argument");
 						return;
 					}
-				} else {
+				}
+				else
+				{
 					System.err.println("Insufficient argument");
 					return;
 				}
-			} else {
+			}
+			else
+			{
 				System.err.println("Invalid argument");
 				return;
 			}
+			
 			if (dataFromFile.length > 0) {
-
 				PcapDecoder pcapNgDecoder = new PcapDecoder(dataFromFile);
 				int status = pcapNgDecoder.decode();
-
-				if (status == DecoderStatus.SUCCESS_STATUS) {
-					ArrayList<IWlan802dot11Radiotap> wlanDecodedFrameList = new ArrayList<IWlan802dot11Radiotap>();
-
-					for (int i = 0; i < pcapNgDecoder.getSectionList().size(); i++) {
-						if (pcapNgDecoder.getSectionList().get(i) instanceof IEnhancedPacketBLock) {
-							
+				
+				if (status == DecoderStatus.SUCCESS_STATUS)
+				{
+					ArrayList<IRadioTapFrame> radiotapFrame = new ArrayList<IRadioTapFrame>();
+					
+					for (int i = 0; i  < pcapNgDecoder.getSectionList().size();i++)
+					{
+						if (pcapNgDecoder.getSectionList().get(i) instanceof IEnhancedPacketBLock)
+						{
 							IEnhancedPacketBLock packet = (IEnhancedPacketBLock) pcapNgDecoder.getSectionList().get(i);
-
-							WlanDecoder dataDecode = new WlanDecoder(packet.getPacketData());
-							dataDecode.decodeWithRadiotap();
-							wlanDecodedFrameList.add(dataDecode);
+							
+							try {
+								// decode radiotap frame for this packet data
+								RadioTap radioTap = new RadioTap(packet.getPacketData());
+								radiotapFrame.add(radioTap);
+							} catch (RadioTapException e) {
+								e.printStackTrace();
+								return;
+							}
 						}
 					}
+					
 					long endTime   = System.currentTimeMillis();
 					long totalTime = endTime - startTime;
 					
 					System.out.println("decoding time : " + totalTime + " ms");
-					
 					if (verbose)
-						DisplayDecodingInfo.displayAllInfo(wlanDecodedFrameList);
+					{
+						DisplayPacket.decode(radiotapFrame);
+					}
 				}
-				else
-					System.err.println("Decoding error occured");
 			}
-			else
-				System.err.println("File is empty");
 		}
 		else
+		{
 			System.err.println("Insufficient argument");
+		}
 	}
-
+	
 	/**
 	 * Read all bytes from file
 	 * 
@@ -155,8 +190,6 @@ public class DecodeMain {
 		} catch (IOException e) {
 			System.err.print("Error file path is incorrect");
 		}
-
 		return data;
 	}
-
 }
