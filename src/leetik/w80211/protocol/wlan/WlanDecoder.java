@@ -23,12 +23,12 @@
  */
 package leetik.w80211.protocol.wlan;
 
-import fr.bmartel.protocol.radiotap.RadioTap;
-import fr.bmartel.protocol.radiotap.inter.IRadioTapFrame;
+import leetik.w80211.protocol.radiotap.RadioTap;
+import leetik.w80211.protocol.radiotap.inter.IRadioTapFrame;
 import leetik.w80211.protocol.wlan.frame.IWlanFrame;
 import leetik.w80211.protocol.wlan.inter.IWlan802dot11Radiotap;
 import leetik.w80211.protocol.wlan.inter.IWlanFrameControl;
-import fr.bmartel.utils.RadioTapException;
+import leetik.w80211.utils.RadioTapException;
 
 /**
  * Wlan decoder
