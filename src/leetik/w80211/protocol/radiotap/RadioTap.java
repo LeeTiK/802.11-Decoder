@@ -70,18 +70,30 @@ public class RadioTap implements IRadioTapFrame {
 		{
 			if (frame.length > 7) {
 				headerRevision = frame[0];
-	
+
 				headerLength = ByteUtils.convertByteArrayToInt(new byte[] { frame[3], frame[2] });
-				
+
+
 				presentFlags = new byte[] { frame[7], frame[6], frame[5], frame[4] };
-	
+
+				int size = 0;
+
+				if (((frame[7] >> 7) & 0x01) == 1) {
+					byte[] nextPresentFlags = new byte[] { frame[11], frame[10], frame[9], frame[8] };
+					size +=4;
+					if (((frame[11] >> 7) & 0x01) == 1) {
+						byte[] nextPresentFlags2 = new byte[] { frame[15], frame[14], frame[13], frame[12] };
+						size+=4;
+					}
+				}
+
 				if (frame.length >= headerLength + 8) {
 					// fill radio tap header payload according to header length
-					byte[] radioTapPayload = new byte[headerLength - 8];
-	
+					byte[] radioTapPayload = new byte[headerLength - 8 -size];
+
 					if (headerLength > 8) {
-						for (int i = 8; i < headerLength; i++) {
-							radioTapPayload[i - 8] = frame[i];
+						for (int i = 8+size; i < headerLength; i++) {
+							radioTapPayload[i - 8 -size ] = frame[i];
 						}
 					}
 					leetik.w80211.protocol.radiotap.RadioTapFlags flags = new RadioTapFlags();
