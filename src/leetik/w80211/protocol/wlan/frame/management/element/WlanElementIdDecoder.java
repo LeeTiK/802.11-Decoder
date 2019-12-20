@@ -86,7 +86,7 @@ public class WlanElementIdDecoder {
 					listOfElements.add(element);
 				}
 
-				if ((currentFrame.length - length - 2) > 0) {
+				if ((currentFrame.length - length - 2) >= 2) {
 					byte[] dest = new byte[currentFrame.length - length - 2];
 					System.arraycopy(currentFrame, length + 2, dest, 0,
 							currentFrame.length - length - 2);
