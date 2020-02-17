@@ -35,4 +35,6 @@ public interface IRadioTapFrame {
 	 * @return
 	 */
 	public IRadiotapData getRadioTapData();
+
+	public boolean isMalformedRadioTap();
 }

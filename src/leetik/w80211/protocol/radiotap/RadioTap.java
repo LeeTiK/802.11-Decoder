@@ -64,6 +64,9 @@ public class RadioTap implements IRadioTapFrame {
 	/** object containing all properties decoded from radio tap payload */
 	private ArrayList<IRadiotapData> radioTapData = null;
 
+	//
+	private boolean malformedRadioTap = false;
+
 	/**
 	 * Parse radio tap headers according to radio tap standard
 	 * http://www.radiotap.org/
@@ -77,6 +80,11 @@ public class RadioTap implements IRadioTapFrame {
 
 			if (byteBuffer.limit() > 7) {
 				headerRevision = byteBuffer.get();
+
+				if (headerRevision !=0 ) {
+					malformedRadioTap = true;
+					return;
+				}
 
 				headerPad = byteBuffer.get();
 
@@ -107,6 +115,9 @@ public class RadioTap implements IRadioTapFrame {
 					{
 						radioTapData.add(presentFlags.get(i).decode(byteBuffer));
 					}
+				}
+				else {
+					malformedRadioTap = true;
 				}
 
 				/*
@@ -226,5 +237,10 @@ public class RadioTap implements IRadioTapFrame {
 	@Override
 	public IRadiotapFlags getRadioTapFlagList() {
 		return flagList;
+	}
+
+	@Override
+	public boolean isMalformedRadioTap() {
+		return malformedRadioTap;
 	}
 }
