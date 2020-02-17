@@ -52,7 +52,7 @@ public class TimElement extends WlanElementAbstr implements ITimElement {
 		partialVirtualBitmap=new byte[data.length-3];
 		for (int i = 3;i<data.length;i++)
 		{
-			partialVirtualBitmap[3-i]=data[i];
+			partialVirtualBitmap[i-3]=data[i];
 		}
 	}
 

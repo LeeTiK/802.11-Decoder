@@ -8,39 +8,19 @@ package leetik.w80211.protocol.radiotap.inter;
  */
 public interface IRadiotapFlags {
 
-	public boolean isTFST();
+	public boolean isCFP();
 	
-	public boolean isFlags();
+	public boolean isPreamble();
 	
-	public boolean isDataRate();
+	public boolean isWEP();
 	
-	public boolean isChannel();
+	public boolean isFragmentation();
 	
-	public boolean isFHSS();
+	public boolean isFCSatEnd();
 	
-	public boolean isDbmAntSignal();
+	public boolean isDataPad();
 	
-	public boolean isDbmAntNoise();
+	public boolean isBadFCS();
 	
-	public boolean isLockQuality();
-	
-	public boolean isTxAttenuation();
-	
-	public boolean isDbTxAttenuation();
-	
-	public boolean isDbmTxPower();
-	
-	public boolean isAntenna();
-	
-	public boolean isDbAntennaSignal();
-	
-	public boolean isDbAntennaNoise();
-	
-	public boolean isRxFlags();
-	
-	public boolean isMcs();
-	
-	public boolean isAmpdu();
-	
-	public boolean isVht();
+	public boolean isShortGI();
 }

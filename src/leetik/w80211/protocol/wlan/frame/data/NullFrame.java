@@ -3,6 +3,8 @@ package leetik.w80211.protocol.wlan.frame.data;
 import leetik.w80211.protocol.wlan.frame.WlanDataAbstr;
 import leetik.w80211.protocol.wlan.frame.data.inter.INullFrame;
 
+import java.nio.ByteBuffer;
+
 /**
  * Null data or qos data frame decoder
  * 
@@ -21,7 +23,12 @@ public class NullFrame extends WlanDataAbstr implements INullFrame {
 	 * @param fromDS
 	 *            from distribution system indicator
 	 */
+	@Deprecated
 	public NullFrame(byte[] frame, boolean toDS, boolean fromDS) {
 		super(frame, toDS, fromDS);
+	}
+
+	public NullFrame(ByteBuffer byteBuffer, boolean toDS, boolean fromDS) {
+		super(byteBuffer, toDS, fromDS);
 	}
 }

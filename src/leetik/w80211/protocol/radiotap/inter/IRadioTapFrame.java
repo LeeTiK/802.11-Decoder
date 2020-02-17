@@ -27,7 +27,7 @@ public interface IRadioTapFrame {
 	 * 
 	 * @return
 	 */
-	public IRadiotapFlags getRadioTapFlagList();
+	public IRadiotapPresentFlags getRadioTapFlagList();
 	
 	/**
 	 * Retrieve radio tap data object

@@ -67,6 +67,8 @@ public class WlanFrameDecoder {
 
 	private IWlanFrame wlanFrame = null;
 
+	private byte[] fcs = new byte[]{};
+
 	/**
 	 * Decode frame extracted from byte array (byte array is complete w80211
 	 * frames)
@@ -215,13 +217,25 @@ public class WlanFrameDecoder {
 		}
 	}
 
-	public WlanFrameDecoder(ByteBuffer frame) {
+	public WlanFrameDecoder(ByteBuffer byteBuffer, boolean fcs) {
 
-		frameControl = new WlanFrameControl(frame.getShort());
+		frameControl = new WlanFrameControl(byteBuffer.getShort());
+
+		if (fcs)
+		{
+			this.fcs = new byte[4];
+			byteBuffer.mark();
+			byteBuffer.position(byteBuffer.limit()-4);
+
+			byteBuffer.get(this.fcs);
+
+			byteBuffer.limit(byteBuffer.limit()-4);
+			byteBuffer.reset();
+		}
 
 		// define new frame shifted to the right
-		byte[] wlanFrameData = new byte[frame.remaining()];
-		frame.get(wlanFrameData);
+		//byte[] wlanFrameData = new byte[frame.remaining()];
+		//frame.get(wlanFrameData);
 
 		switch (frameControl.getType()) {
 			case WlanFrameType.MANAGEMENT_FRAME_TYPE:
@@ -229,34 +243,34 @@ public class WlanFrameDecoder {
 				switch (frameControl.getSubType()) {
 
 					case WlanFrameSubType.MANAGEMENT_ASSOCIATION_REQUEST_FRAME:
-						wlanFrame = new AssociationRequestFrame(wlanFrameData);
+						wlanFrame = new AssociationRequestFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_REASSOCIATION_REQUEST_FRAME:
-						wlanFrame = new ReassociationRequestFrame(wlanFrameData);
+						wlanFrame = new ReassociationRequestFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_REASSOCIATION_RESPONSE_FRAME:
-						wlanFrame = new ReAssociationResponseFrame(wlanFrameData);
+						wlanFrame = new ReAssociationResponseFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_PROBE_REQUEST_FRAME:
-						wlanFrame = new ProbeRequestFrame(wlanFrameData);
+						wlanFrame = new ProbeRequestFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_PROBE_RESPONSE_FRAME:
-						wlanFrame = new ProbeResponseFrame(wlanFrameData);
+						wlanFrame = new ProbeResponseFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_BEACON_FRAME:
-						wlanFrame = new BeaconFrame(wlanFrameData);
+						wlanFrame = new BeaconFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_ANNOUNCEMENT_TRAFFIC_INDICATION_MESSAGE_FRAME:
-						wlanFrame = new IbssAnnouncementIndicationMapFrame(wlanFrameData);
+						wlanFrame = new IbssAnnouncementIndicationMapFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_DISASSOCIATION_FRAME:
-						wlanFrame = new DisassociationFrame(wlanFrameData);
+						wlanFrame = new DisassociationFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_AUTHENTICATION_FRAME:
-						wlanFrame = new AuthenticationFrame(wlanFrameData);
+						wlanFrame = new AuthenticationFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.MANAGEMENT_DEAUTHENTICATION_FRAME:
-						wlanFrame = new DeAuthenticationFrame(wlanFrameData);
+						wlanFrame = new DeAuthenticationFrame(byteBuffer);
 						break;
 				}
 				break;
@@ -265,89 +279,89 @@ public class WlanFrameDecoder {
 
 				switch (frameControl.getSubType()) {
 					case WlanFrameSubType.CONTROL_POWER_SAVE_POLLING_PACKET:
-						wlanFrame = new PowerSavePollingFrame(wlanFrameData);
+						wlanFrame = new PowerSavePollingFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.CONTROL_REQUEST_TO_SEND:
-						wlanFrame = new RequestToSendFrame(wlanFrameData);
+						wlanFrame = new RequestToSendFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.CONTROL_CLEAR_TO_SEND:
-						wlanFrame = new ClearToSendFrame(wlanFrameData);
+						wlanFrame = new ClearToSendFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.CONTROL_ACK:
-						wlanFrame = new AckFrame(wlanFrameData);
+						wlanFrame = new AckFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.CONTROL_SIGNAL_CONTENTION_FREE:
-						wlanFrame = new ContentionFreeFrame(wlanFrameData);
+						wlanFrame = new ContentionFreeFrame(byteBuffer);
 						break;
 					case WlanFrameSubType.CONTROL_SIGNAL_CONTENTION_FREE_AND_RECEIVE_ACK:
-						wlanFrame = new ContentionFreeReceiveAckFrame(wlanFrameData);
+						wlanFrame = new ContentionFreeReceiveAckFrame(byteBuffer);
 						break;
 				}
 				break;
 			case WlanFrameType.DATA_FRAME_TYPE:
 				switch (frameControl.getSubType()) {
 					case WlanFrameSubType.DATA_FRAME:
-						wlanFrame = new DataFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_ACK:
-						wlanFrame = new DataFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_POLL:
-						wlanFrame = new DataFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_ACK_PLUS_POLL:
-						wlanFrame = new DataFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_NULL_FRAME:
-						wlanFrame = new NullFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new NullFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_ACK:
-						wlanFrame = new DataFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_POLL:
-						wlanFrame = new DataFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_ACK_PLUS_POLL:
-						wlanFrame = new DataFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_QOS_FRAME:
-						wlanFrame = new QosDataFrame(wlanFrameData,
+						wlanFrame = new QosDataFrame(byteBuffer,
 								frameControl.isToDS(), frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_ACK_FRAME:
-						wlanFrame = new QosDataFrame(wlanFrameData,
+						wlanFrame = new QosDataFrame(byteBuffer,
 								frameControl.isToDS(), frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_POLL_FRAME:
-						wlanFrame = new QosDataFrame(wlanFrameData,
+						wlanFrame = new QosDataFrame(byteBuffer,
 								frameControl.isToDS(), frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_ACK_PLUS_POLL_FRAME:
-						wlanFrame = new QosDataFrame(wlanFrameData,
+						wlanFrame = new QosDataFrame(byteBuffer,
 								frameControl.isToDS(), frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.DATA_QOS_NULL_FRAME:
-						wlanFrame = new NullFrame(wlanFrameData, frameControl.isToDS(),
+						wlanFrame = new NullFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_ACK_FRAME:
-						wlanFrame = new QosDataFrame(wlanFrameData,
+						wlanFrame = new QosDataFrame(byteBuffer,
 								frameControl.isToDS(), frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_POLL_FRAME:
-						wlanFrame = new QosDataFrame(wlanFrameData,
+						wlanFrame = new QosDataFrame(byteBuffer,
 								frameControl.isToDS(), frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_ACK_PLUS_POLL_FRAME:
-						wlanFrame = new QosDataFrame(wlanFrameData,
+						wlanFrame = new QosDataFrame(byteBuffer,
 								frameControl.isToDS(), frameControl.isFromDS());
 						break;
 				}

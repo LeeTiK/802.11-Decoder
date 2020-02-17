@@ -1,6 +1,8 @@
 package leetik.w80211.protocol.wlan.frame;
 
 
+import java.nio.ByteBuffer;
+
 /**
  * Basic management frame<br/>
  * <ul>
@@ -56,6 +58,7 @@ public abstract class WlanManagementAbstr implements IWlanManagementFrame,
 	 * @param frame
 	 *            w80211 frame with control frame omitted
 	 */
+	@Deprecated
 	public WlanManagementAbstr(byte[] frame) {
 		if (frame.length >= 26) {
 			durationId = new byte[] { frame[0], frame[1] };
@@ -71,7 +74,7 @@ public abstract class WlanManagementAbstr implements IWlanManagementFrame,
 				frameBody = new byte[] {};
 				fcs=new byte[]{ frame[22], frame[23],  frame[24], frame[25]};
 			} else {
-				frameBody = new byte[frame.length - 26];
+				frameBody = new byte[frame.length - 22];
 				for (int i = 22; i < frame.length-4; i++) {
 					frameBody[i - 22] = frame[i];
 				}
@@ -82,10 +85,56 @@ public abstract class WlanManagementAbstr implements IWlanManagementFrame,
 		}
 	}
 
+	public WlanManagementAbstr(ByteBuffer byteBuffer) {
+		if (byteBuffer.remaining() >= 22) {
+			int position = byteBuffer.position();
+
+			durationId = new byte[] { byteBuffer.get(position), byteBuffer.get(position+1) };
+			destinationAddr = new byte[] { byteBuffer.get(position+2), byteBuffer.get(position + 3), byteBuffer.get(position +4),
+			byteBuffer.get(position + 5), byteBuffer.get(position+6), byteBuffer.get(position+7) };
+			sourceAddr = new byte[] { byteBuffer.get(position+8), byteBuffer.get(position+9), byteBuffer.get(position+10), byteBuffer.get(position+11),
+					byteBuffer.get(position+12), byteBuffer.get(position+13) };
+			bssid = new byte[] { byteBuffer.get(position+14), byteBuffer.get(position+15), byteBuffer.get(position+16), byteBuffer.get(position+17),
+					byteBuffer.get(position+18), byteBuffer.get(position+19) };
+			sequenceControl = new byte[] { byteBuffer.get(position+20), byteBuffer.get(position+21) };
+
+			if (byteBuffer.remaining() == 22) {
+				frameBody = new byte[] {};
+			} else {
+				byteBuffer.position(position+22);
+				frameBody = new byte[byteBuffer.remaining()];
+				byteBuffer.mark();
+				byteBuffer.get(frameBody);
+				byteBuffer.reset();
+
+				//fcs=new byte[]{ frame[frame.length-4], frame[frame.length-3],  frame[frame.length-2], frame[frame.length-1]};
+			}
+		} else {
+			System.err.println("error treating Management frame");
+		}
+	}
+
+	public void readFCS(ByteBuffer byteBuffer)
+	{
+		if (byteBuffer.remaining()==4)
+		{
+			fcs = new byte[4];
+			byteBuffer.get(fcs);
+		}
+		else{
+			fcs = new byte[]{};
+		}
+	}
+
 	@Override
 	public byte[] getFcs()
 	{
 		return fcs;
+	}
+
+	@Override
+	public boolean isFcs(){
+		return fcs.length!=0;
 	}
 	
 	@Override

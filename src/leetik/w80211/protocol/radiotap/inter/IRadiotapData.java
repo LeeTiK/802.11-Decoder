@@ -12,7 +12,7 @@ import leetik.w80211.protocol.radiotap.RadioTapVHT;
 public interface IRadiotapData {
 
 	/** Properties of transmitted and received frames. */
-	public int getFlags();
+	public IRadiotapFlags getFlags();
 	
 	/** TX/RX data rate in Mbps */
 	public int getDataRate();

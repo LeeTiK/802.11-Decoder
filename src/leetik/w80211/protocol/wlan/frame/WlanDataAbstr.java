@@ -24,6 +24,8 @@
 package leetik.w80211.protocol.wlan.frame;
 
 
+import java.nio.ByteBuffer;
+
 /**
  * Define default implementation for all w80211 802.11 data frame including
  * qos/data/NULL<br/>
@@ -87,6 +89,7 @@ public abstract class WlanDataAbstr implements IWlanDataFrame, IWlanFrame {
 	 * 
 	 * @param frame
 	 */
+	@Deprecated
 	public WlanDataAbstr(byte[] frame, boolean toDS, boolean fromDS) {
 		if (frame.length >= 22) {
 			durationId = new byte[] { frame[1], frame[0] };
@@ -157,6 +160,99 @@ public abstract class WlanDataAbstr implements IWlanDataFrame, IWlanFrame {
 					for (int i = 28; i < frame.length; i++) {
 						frameBody[i - 28] = frame[i];
 					}
+				}
+			}
+
+		} else {
+			System.err.println("error treating Data frame");
+		}
+	}
+
+	public WlanDataAbstr(ByteBuffer byteBuffer, boolean toDS, boolean fromDS) {
+		if (byteBuffer.remaining() >= 22) {
+			int position = byteBuffer.position();
+
+			durationId = new byte[] { byteBuffer.get(position+1), byteBuffer.get(position)};
+
+			if (!toDS && !fromDS) {
+				destinationAddr = new byte[] { byteBuffer.get(position+2), byteBuffer.get(position+3), byteBuffer.get(position+4), byteBuffer.get(position+5),
+						byteBuffer.get(position+6), byteBuffer.get(position+7) };
+
+				sourceAddr = new byte[] { byteBuffer.get(position+8), byteBuffer.get(position+9), byteBuffer.get(position+10), byteBuffer.get(position+11),
+						byteBuffer.get(position+12), byteBuffer.get(position+13) };
+
+				bssid =new byte[] { byteBuffer.get(position+14), byteBuffer.get(position+15), byteBuffer.get(position+16), byteBuffer.get(position+17),
+						byteBuffer.get(position+18), byteBuffer.get(position+19) };
+				sequenceControl =  new byte[] { byteBuffer.get(position+20), byteBuffer.get(position + 21)};
+
+				if (byteBuffer.remaining() == 22) {
+					frameBody = new byte[] {};
+				} else {
+					byteBuffer.position(position+22);
+					byteBuffer.mark();
+					frameBody = new byte[byteBuffer.remaining()];
+					byteBuffer.get(frameBody);
+					byteBuffer.reset();
+				}
+			} else if (!toDS && fromDS) {
+				destinationAddr =new byte[] { byteBuffer.get(position+2), byteBuffer.get(position+3), byteBuffer.get(position+4), byteBuffer.get(position+5),
+						byteBuffer.get(position+6), byteBuffer.get(position+7) };
+
+				bssid = new byte[] { byteBuffer.get(position+8), byteBuffer.get(position+9), byteBuffer.get(position+10), byteBuffer.get(position+11),
+						byteBuffer.get(position+12), byteBuffer.get(position+13) };
+				sourceAddr = new byte[] { byteBuffer.get(position+14), byteBuffer.get(position+15), byteBuffer.get(position+16), byteBuffer.get(position+17),
+						byteBuffer.get(position+18), byteBuffer.get(position+19) };
+				sequenceControl =new byte[] { byteBuffer.get(position+20), byteBuffer.get(position + 21)};
+
+				if (byteBuffer.remaining() == 22) {
+					frameBody = new byte[] {};
+				} else {
+					byteBuffer.position(position+22);
+					byteBuffer.mark();
+					frameBody = new byte[byteBuffer.remaining()];
+					byteBuffer.get(frameBody);
+					byteBuffer.reset();
+				}
+			} else if (toDS && !fromDS) {
+				bssid =new byte[] { byteBuffer.get(position+2), byteBuffer.get(position+3), byteBuffer.get(position+4), byteBuffer.get(position+5),
+						byteBuffer.get(position+6), byteBuffer.get(position+7) };
+
+				sourceAddr = new byte[] { byteBuffer.get(position+8), byteBuffer.get(position+9), byteBuffer.get(position+10), byteBuffer.get(position+11),
+						byteBuffer.get(position+12), byteBuffer.get(position+13) };
+				destinationAddr = new byte[] { byteBuffer.get(position+14), byteBuffer.get(position+15), byteBuffer.get(position+16), byteBuffer.get(position+17),
+						byteBuffer.get(position+18), byteBuffer.get(position+19) };
+				sequenceControl = new byte[] { byteBuffer.get(position+20), byteBuffer.get(position + 21)};
+
+				if (byteBuffer.remaining() == 22) {
+					frameBody = new byte[] {};
+				} else {
+					byteBuffer.position(position+22);
+					byteBuffer.mark();
+					frameBody = new byte[byteBuffer.remaining()];
+					byteBuffer.get(frameBody);
+					byteBuffer.reset();
+				}
+			} else {
+				receiverAddr = new byte[] { byteBuffer.get(position+2), byteBuffer.get(position+3), byteBuffer.get(position+4), byteBuffer.get(position+5),
+						byteBuffer.get(position+6), byteBuffer.get(position+7) };
+
+				transmitterAddr =new byte[] { byteBuffer.get(position+8), byteBuffer.get(position+9), byteBuffer.get(position+10), byteBuffer.get(position+11),
+						byteBuffer.get(position+12), byteBuffer.get(position+13) };
+				destinationAddr = new byte[] { byteBuffer.get(position+14), byteBuffer.get(position+15), byteBuffer.get(position+16), byteBuffer.get(position+17),
+						byteBuffer.get(position+18), byteBuffer.get(position+19) };
+				sequenceControl = new byte[] { byteBuffer.get(position+20), byteBuffer.get(position + 21)};
+
+				sourceAddr= new byte[] { byteBuffer.get(position+22), byteBuffer.get(position+23), byteBuffer.get(position+24), byteBuffer.get(position+25),
+						byteBuffer.get(position+26), byteBuffer.get(position+27) };
+
+				if (byteBuffer.remaining() == 28) {
+					frameBody = new byte[] {};
+				} else {
+					byteBuffer.position(position+28);
+					byteBuffer.mark();
+					frameBody = new byte[byteBuffer.remaining()];
+					byteBuffer.get(frameBody);
+					byteBuffer.reset();
 				}
 			}
 

@@ -3,6 +3,8 @@ package leetik.w80211.protocol.wlan.frame.data;
 import leetik.w80211.protocol.wlan.frame.WlanDataAbstr;
 import leetik.w80211.protocol.wlan.frame.data.inter.IQosDataFrame;
 
+import java.nio.ByteBuffer;
+
 /**
  * QOS data frame decoder
  * 
@@ -16,6 +18,10 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 	 */
 	private byte[] qosControl = null;
 
+	private byte[] data;
+
+	private byte[] parametersCCMP;
+
 	/**
 	 * Decode QOS data frame
 	 * 
@@ -26,9 +32,26 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 	 * @param fromDS
 	 *            from distribution system indicator
 	 */
+	@Deprecated
 	public QosDataFrame(byte[] frame, boolean toDS, boolean fromDS) {
 		super(frame, toDS, fromDS);
 		qosControl = new byte[] { getFrameBody()[1], getFrameBody()[0] };
+	}
+
+	public QosDataFrame(ByteBuffer byteBuffer, boolean toDS, boolean fromDS) {
+		super(byteBuffer, toDS, fromDS);
+
+		qosControl = new byte[2];
+
+		byteBuffer.get(qosControl);
+
+		parametersCCMP = new byte[8];
+
+		byteBuffer.get(parametersCCMP);
+
+		data = new byte[byteBuffer.remaining()];
+
+		byteBuffer.get(data);
 	}
 
 	@Override

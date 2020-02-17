@@ -1,5 +1,6 @@
 package leetik.w80211.protocol.wlan.frame.management;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
@@ -54,6 +55,7 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 	 * @param frame
 	 *            frame with omitted control frame
 	 */
+	@Deprecated
 	public BeaconFrame(byte[] frame) {
 		super(frame);
 		byte[] frameBody = getFrameBody();
@@ -86,6 +88,23 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 
 		WlanElementIdDecoder decoder = new WlanElementIdDecoder();
 		taggedParameter = decoder.decode(taggedParameterArray);
+	}
+
+	public BeaconFrame(ByteBuffer byteBuffer) {
+		super(byteBuffer);
+		//byte[] frameBody = getFrameBody();
+
+		timestamp = new byte[8];
+		byteBuffer.get(timestamp);
+
+		beaconInterval = new byte[2];
+		byteBuffer.get(beaconInterval);
+
+		capabilityInfo = new byte[2];
+		byteBuffer.get(capabilityInfo);
+
+		WlanElementIdDecoder decoder = new WlanElementIdDecoder();
+		taggedParameter = decoder.decode(byteBuffer);
 	}
 
 	@Override

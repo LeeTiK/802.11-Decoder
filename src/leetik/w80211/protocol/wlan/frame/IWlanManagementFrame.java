@@ -56,4 +56,6 @@ public interface IWlanManagementFrame {
 	 */
 	public byte[] getFcs();
 
+	public boolean isFcs();
+
 }

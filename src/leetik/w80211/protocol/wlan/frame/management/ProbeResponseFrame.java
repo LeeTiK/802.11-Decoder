@@ -1,5 +1,6 @@
 package leetik.w80211.protocol.wlan.frame.management;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
@@ -43,6 +44,7 @@ public class ProbeResponseFrame extends WlanManagementAbstr implements IProbeRes
 	 */
 	private List<IWlanElement> taggedParameter = null;
 
+	@Deprecated
 	public ProbeResponseFrame(byte[] frame) {
 		super(frame);
 		byte[] frameBody = getFrameBody();
@@ -75,6 +77,23 @@ public class ProbeResponseFrame extends WlanManagementAbstr implements IProbeRes
 
 		WlanElementIdDecoder decoder = new WlanElementIdDecoder();
 		taggedParameter = decoder.decode(taggedParameterArray);
+	}
+
+	public ProbeResponseFrame(ByteBuffer byteBuffer) {
+		super(byteBuffer);
+		//byte[] frameBody = getFrameBody();
+
+		timestamp = new byte[8];
+		byteBuffer.get(timestamp);
+
+		beaconInterval = new byte[2];
+		byteBuffer.get(beaconInterval);
+
+		capabilityInfo = new byte[2];
+		byteBuffer.get(capabilityInfo);
+
+		WlanElementIdDecoder decoder = new WlanElementIdDecoder();
+		taggedParameter = decoder.decode(byteBuffer);
 	}
 
 	@Override

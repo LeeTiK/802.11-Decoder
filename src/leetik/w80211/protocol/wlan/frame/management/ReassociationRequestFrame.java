@@ -1,5 +1,6 @@
 package leetik.w80211.protocol.wlan.frame.management;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
@@ -54,7 +55,41 @@ public class ReassociationRequestFrame extends WlanManagementAbstr implements IR
 	 * @param frame
 	 *            frame with omitted control frame
 	 */
+	@Deprecated
 	public ReassociationRequestFrame(byte[] frame) {
+		super(frame);
+		byte[] frameBody = getFrameBody();
+
+		capabilityInfo = new byte[2];
+		for (int i = 0; i < capabilityInfo.length; i++) {
+			capabilityInfo[capabilityInfo.length - 1 - i] = frameBody[i];
+		}
+
+		listenInterval = new byte[2];
+		for (int i = 2; i < 4; i++) {
+			listenInterval[4 - 1 - i] = frameBody[i];
+		}
+		currentAPAdress = new byte[6];
+		for (int i = 4; i < 10; i++) {
+			currentAPAdress[10 - 1 - i] = frameBody[i];
+		}
+
+		byte[] taggedParameterArray = null;
+
+		if (frameBody.length >= 11) {
+			taggedParameterArray = new byte[frameBody.length - 10];
+			for (int i = 10; i < frameBody.length; i++) {
+				taggedParameterArray[i - 10] = frameBody[i];
+			}
+		} else {
+			taggedParameterArray = new byte[] {};
+		}
+
+		WlanElementIdDecoder decoder = new WlanElementIdDecoder();
+		taggedParameter = decoder.decode(taggedParameterArray);
+	}
+
+	public ReassociationRequestFrame(ByteBuffer frame) {
 		super(frame);
 		byte[] frameBody = getFrameBody();
 

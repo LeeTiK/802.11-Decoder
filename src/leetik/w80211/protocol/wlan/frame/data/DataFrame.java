@@ -3,6 +3,8 @@ package leetik.w80211.protocol.wlan.frame.data;
 import leetik.w80211.protocol.wlan.frame.WlanDataAbstr;
 import leetik.w80211.protocol.wlan.frame.data.inter.IDataFrame;
 
+import java.nio.ByteBuffer;
+
 /**
  * Classic Data frame object for protocol w80211 802.11
  * 
@@ -21,8 +23,27 @@ public class DataFrame extends WlanDataAbstr implements IDataFrame {
 	 * @param fromDS
 	 *            from distribution system indicator
 	 */
+
+	private byte[] data;
+
+	private byte[] parametersCCMP;
+
+	@Deprecated
 	public DataFrame(byte[] frame, boolean toDS, boolean fromDS) {
 		super(frame, toDS, fromDS);
+	}
+
+	public DataFrame(ByteBuffer byteBuffer, boolean toDS, boolean fromDS) {
+		super(byteBuffer, toDS, fromDS);
+
+		parametersCCMP = new byte[8];
+
+		byteBuffer.get(parametersCCMP);
+
+		data = new byte[byteBuffer.remaining()];
+
+		byteBuffer.get(data);
+
 	}
 
 }

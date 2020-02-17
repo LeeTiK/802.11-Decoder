@@ -61,23 +61,23 @@ public class RadioTapChannel implements IRadiotapChannel {
 
 	public RadioTapChannel(int frequency, int bitmask) {
 
-		radioTapChannel(this.frequency,bitmask);
+		radioTapChannel(frequency,bitmask);
 	}
 
 	public void radioTapChannel(int frequency, int bitmask) {
 
 		this.frequency = frequency;
 
-		if ((bitmask & 0x1000) != 0) {
+		if ((bitmask & 0x10) != 0) {
 			turboChannel = true;
 		}
-		if ((bitmask & 0x2000) != 0) {
+		if ((bitmask & 0x20) != 0) {
 			cckChannel = true;
 		}
-		if ((bitmask & 0x4000) != 0) {
+		if ((bitmask & 0x40) != 0) {
 			ofdmChannel = true;
 		}
-		if ((bitmask & 0x8000) != 0) {
+		if ((bitmask & 0x80) != 0) {
 			spectrumChannel2GHZ = true;
 		}
 		if ((bitmask & 0x01) != 0) {

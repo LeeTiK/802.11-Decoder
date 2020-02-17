@@ -16,6 +16,10 @@ public class RadioTapMCS {
 	 */
 	private byte mcsRate = 0x00;
 
+	private byte flagsField = 0x00;
+
+	private byte knowField = 0x00;
+
 	/**
 	 * Build a radio tape MCS object
 	 * 
@@ -24,7 +28,10 @@ public class RadioTapMCS {
 	 * @param mcsField
 	 */
 	public RadioTapMCS(byte knownField, byte flagsField, byte mcsField) {
-		mcsRate = mcsField;
+		this.mcsRate = mcsField;
+		this.flagsField = flagsField;
+		this.knowField = knownField;
+		/*
 		switch (knownField) {
 		case 0x03:
 			switch (flagsField) {
@@ -60,7 +67,7 @@ public class RadioTapMCS {
 			}
 		case 0x60:
 			System.out.println("Number of STBC streams : " + (flagsField & 0XFF));
-		}
+		}*/
 	}
 
 	public byte getMcsRate() {

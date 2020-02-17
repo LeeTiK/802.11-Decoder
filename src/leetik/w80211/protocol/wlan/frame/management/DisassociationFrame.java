@@ -4,6 +4,8 @@ import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.inter.IDisassociationFrame;
 import leetik.w80211.protocol.wlan.utils.ByteUtils;
 
+import java.nio.ByteBuffer;
+
 /**
  * Management frame - Disassociation frame<br/>
  * <ul>
@@ -30,7 +32,15 @@ public class DisassociationFrame extends WlanManagementAbstr implements IDisasso
 	 * @param frame
 	 *            frame with omitted control frame
 	 */
+	@Deprecated
 	public DisassociationFrame(byte[] frame) {
+		super(frame);
+		byte[] frameBody = getFrameBody();
+		statusCode = ByteUtils.convertByteArrayToInt(new byte[] {
+				frameBody[1], frameBody[0] });
+	}
+
+	public DisassociationFrame(ByteBuffer frame) {
 		super(frame);
 		byte[] frameBody = getFrameBody();
 		statusCode = ByteUtils.convertByteArrayToInt(new byte[] {

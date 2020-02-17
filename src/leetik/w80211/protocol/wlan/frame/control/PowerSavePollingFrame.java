@@ -4,6 +4,8 @@ import leetik.w80211.protocol.wlan.frame.IWlanFrame;
 import leetik.w80211.protocol.wlan.frame.control.inter.IPowerSavePollingFrame;
 import leetik.w80211.protocol.wlan.inter.IWlanControlFrame;
 
+import java.nio.ByteBuffer;
+
 /**
  * Power saving frame - Control Frame<br/>
  * <ul>
@@ -29,6 +31,7 @@ public class PowerSavePollingFrame implements IWlanControlFrame, IWlanFrame,
 	 * @param frame
 	 *            byte array omitting frame control
 	 */
+	@Deprecated
 	public PowerSavePollingFrame(byte[] frame) {
 
 		if (frame.length >= 14) {
@@ -39,6 +42,26 @@ public class PowerSavePollingFrame implements IWlanControlFrame, IWlanFrame,
 
 			transmitterId = new byte[] { frame[8], frame[9], frame[10],
 					frame[11], frame[12], frame[13] };
+		} else {
+			System.err
+					.println("error treating Control frame - power saving frame");
+		}
+	}
+
+	public PowerSavePollingFrame(ByteBuffer byteBuffer) {
+
+		if (byteBuffer.remaining() >= 14) {
+			int position = byteBuffer.position();
+
+			associationId = new byte[] { byteBuffer.get(position), byteBuffer.get(position+1) };
+
+			bssid = new byte[] { byteBuffer.get(position+2), byteBuffer.get(position+3), byteBuffer.get(position+4), byteBuffer.get(position+5),
+					byteBuffer.get(position+6), byteBuffer.get(position+7) };
+
+			transmitterId = new byte[] { byteBuffer.get(position+8), byteBuffer.get(position+9),byteBuffer.get(position+10),
+					byteBuffer.get(position+11), byteBuffer.get(position+12), byteBuffer.get(position+13) };
+
+			byteBuffer.position(position + 14);
 		} else {
 			System.err
 					.println("error treating Control frame - power saving frame");

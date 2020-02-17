@@ -4,6 +4,8 @@ import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.inter.IDeauthenticationFrame;
 import leetik.w80211.protocol.wlan.utils.ByteUtils;
 
+import java.nio.ByteBuffer;
+
 /**
  * Management frame - DeAuthentication frame<br/>
  * <ul>
@@ -30,7 +32,15 @@ public class DeAuthenticationFrame extends WlanManagementAbstr implements IDeaut
 	 * @param frame
 	 *            frame with omitted control frame
 	 */
+	@Deprecated
 	public DeAuthenticationFrame(byte[] frame) {
+		super(frame);
+		byte[] frameBody = getFrameBody();
+		reasonCode = ByteUtils.convertByteArrayToInt(new byte[] {
+				frameBody[1], frameBody[0] });
+	}
+
+	public DeAuthenticationFrame(ByteBuffer frame) {
 		super(frame);
 		byte[] frameBody = getFrameBody();
 		reasonCode = ByteUtils.convertByteArrayToInt(new byte[] {

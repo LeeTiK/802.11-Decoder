@@ -26,6 +26,7 @@ package leetik.w80211.protocol.radiotap;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import leetik.w80211.protocol.radiotap.inter.IRadiotapFlags;
 import leetik.w80211.utils.ByteUtils;
 import leetik.w80211.protocol.radiotap.inter.IRadiotapChannel;
 import leetik.w80211.protocol.radiotap.inter.IRadiotapData;
@@ -47,7 +48,7 @@ public class RadioTapData implements IRadiotapData {
 	private long TFST = -1l;
 
 	/** Properties of transmitted and received frames. */
-	private byte flags = 0;
+	private RadioTapFlags flags = null;
 
 	/** TX/RX data rate in Mbps */
 	private int dataRate = 0;
@@ -168,7 +169,7 @@ public class RadioTapData implements IRadiotapData {
 	}
 
 	public void setFlags() {
-		this.flags = payload[currentIndex];
+		this.flags = new RadioTapFlags(payload[currentIndex]);
 		// this is strange but a bit is added in Radiotap when flags is added
 		// without data rate following
 		currentIndex = currentIndex + 2;
@@ -176,7 +177,7 @@ public class RadioTapData implements IRadiotapData {
 	}
 
 	public void setFlags(byte flags) {
-		this.flags = flags;
+		this.flags = new RadioTapFlags(flags);
 		flagsFieldDefined = true;
 	}
 
@@ -190,7 +191,6 @@ public class RadioTapData implements IRadiotapData {
 
 	public void setDataRate(byte dataRate) {
 		this.dataRate = (dataRate & 0xFF) * 500;
-		flagsFieldDefined = true;
 	}
 
 	public void setChannel() {
@@ -371,7 +371,7 @@ public class RadioTapData implements IRadiotapData {
 		this.currentIndex = currentIndex;
 	}
 	@Override
-	public int getFlags() {
+	public IRadiotapFlags getFlags() {
 		return flags;
 	}
 	@Override
@@ -446,4 +446,7 @@ public class RadioTapData implements IRadiotapData {
 		return isPlcpCrcErrors;
 	}
 
+	public boolean isFlagsFieldDefined() {
+		return flagsFieldDefined;
+	}
 }

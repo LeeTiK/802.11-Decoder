@@ -4,6 +4,8 @@ import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.inter.IAuthenticationFrame;
 import leetik.w80211.protocol.wlan.utils.ByteUtils;
 
+import java.nio.ByteBuffer;
+
 /**
  * Management frame -Authentication frame<br/>
  * <ul>
@@ -42,7 +44,19 @@ public class AuthenticationFrame extends WlanManagementAbstr implements IAuthent
 	 * @param frame
 	 *            frame with omitted control frame
 	 */
+	@Deprecated
 	public AuthenticationFrame(byte[] frame) {
+		super(frame);
+		byte[] frameBody = getFrameBody();
+		authenticationAlgorithmNum = ByteUtils
+				.convertByteArrayToInt(new byte[] { frameBody[1], frameBody[0] });
+		authenticationSeqNum = ByteUtils
+				.convertByteArrayToInt(new byte[] { frameBody[3], frameBody[2] });
+		statusCode = ByteUtils.convertByteArrayToInt(new byte[] {
+				frameBody[5], frameBody[4] });
+	}
+
+	public AuthenticationFrame(ByteBuffer frame) {
 		super(frame);
 		byte[] frameBody = getFrameBody();
 		authenticationAlgorithmNum = ByteUtils
