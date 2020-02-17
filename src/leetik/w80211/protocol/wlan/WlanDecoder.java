@@ -30,6 +30,9 @@ import leetik.w80211.protocol.wlan.inter.IWlan802dot11Radiotap;
 import leetik.w80211.protocol.wlan.inter.IWlanFrameControl;
 import leetik.w80211.utils.RadioTapException;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 /**
  * Wlan decoder
  * 
@@ -39,7 +42,8 @@ import leetik.w80211.utils.RadioTapException;
 public class WlanDecoder implements IWlan802dot11Radiotap {
 
 	public static boolean DISPLAY_ELEMENT_NOT_DECODED = false;
-	
+
+	public static boolean DIRECT_BYTE_BUFFER = false;
 	/**
 	 * radio tap object
 	 */
@@ -50,13 +54,26 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 	 */
 	private WlanFrameDecoder wlan802dot11 = null;
 
-	private byte[] dataFrame = null;
+	//private byte[] dataFrame = null;
+
+	private ByteBuffer dataFrame;
 
 	/**
 	 * initialize w80211 driver
 	 */
 	public WlanDecoder(byte[] dataFrame) {
-		this.dataFrame = dataFrame;
+		if (DIRECT_BYTE_BUFFER)
+		{
+			this.dataFrame = ByteBuffer.allocateDirect(dataFrame.length);
+		}
+		else {
+			this.dataFrame = ByteBuffer.allocate(dataFrame.length);
+		}
+
+		this.dataFrame.put(dataFrame);
+		this.dataFrame.order(ByteOrder.LITTLE_ENDIAN);
+		this.dataFrame.flip();
+		//this.dataFrame = new HeapByteBuffer();
 	}
 
 	public void decodeWithRadiotap() {
@@ -64,12 +81,12 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 		radioTapDecode(dataFrame);
 
 		// decode w80211 protocol
-		wlan802dot11Decode(dataFrame, getRadioTap().getRadioTapDataLength());
+		wlan802dot11Decode(dataFrame);
 	}
 
 	public void decode() {
 		// decode w80211 protocol
-		wlan802dot11Decode(dataFrame, getRadioTap().getRadioTapDataLength());
+		wlan802dot11Decode(dataFrame);
 	}
 
 	/**
@@ -77,7 +94,7 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 	 * 
 	 * @param frame
 	 */
-	public void radioTapDecode(byte[] frame) {
+	public void radioTapDecode(ByteBuffer frame) {
 		try {
 			radioTap = new RadioTap(frame);
 		} catch (RadioTapException e) {
@@ -85,9 +102,18 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 		}
 	}
 
+
+	public void wlan802dot11Decode(ByteBuffer frame) {
+		if ((frame.remaining()) >= 0) {
+			wlan802dot11 = new WlanFrameDecoder(frame);
+		} else {
+			System.err.println("An error occured while decoding w80211 frame");
+		}
+	}
+
 	/**
 	 * Decode w80211 802.11 frames
-	 * 
+	 *
 	 * @param frame
 	 *            byte aray data frames
 	 * @param offset

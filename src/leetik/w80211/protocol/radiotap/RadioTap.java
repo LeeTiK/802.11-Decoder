@@ -29,6 +29,9 @@ import leetik.w80211.protocol.radiotap.inter.IRadioTapFrame;
 import leetik.w80211.protocol.radiotap.inter.IRadiotapData;
 import leetik.w80211.protocol.radiotap.inter.IRadiotapFlags;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+
 /**
  * Define radio tap header values (total Radio Tap length : 2 Bytes)
  * 
@@ -37,16 +40,18 @@ import leetik.w80211.protocol.radiotap.inter.IRadiotapFlags;
         u_int8_t        it_version;     // set to 0
         u_int8_t        it_pad;
         u_int16_t       it_len;         // entire length
-        u_int32_t       it_present;     // fields present
+        u_int32_t[]       it_present;     // fields present
 } __attribute__((__packed__));
 
- * @author Bertrand Martel
- * 
+ * @author Vasetsky Valery
+ *
  */
 public class RadioTap implements IRadioTapFrame {
 
 	/** major version of the radiotap header is in use */
 	private byte headerRevision = 0x00;
+
+	private byte headerPad = 0x00;
 
 	/** * entire length of the radiotap data */
 	private int headerLength = 0;
@@ -54,27 +59,110 @@ public class RadioTap implements IRadioTapFrame {
 	private leetik.w80211.protocol.radiotap.inter.IRadiotapFlags flagList = null;
 	
 	/** * bitmask for values that will be present in radio tap payload */
-	private byte[] presentFlags = null;
+	private ArrayList<RadioTapFlags> presentFlags = null;
 
 	/** object containing all properties decoded from radio tap payload */
-	private RadioTapData radioTapData = null;
+	private ArrayList<IRadiotapData> radioTapData = null;
 
 	/**
 	 * Parse radio tap headers according to radio tap standard
 	 * http://www.radiotap.org/
 	 * 
-	 * @param frame
+	 * @param byteBuffer
 	 */
+	public RadioTap(ByteBuffer byteBuffer) throws RadioTapException{
+		try
+		{
+			byteBuffer.mark();
+
+			if (byteBuffer.limit() > 7) {
+				headerRevision = byteBuffer.get();
+
+				headerPad = byteBuffer.get();
+
+				headerLength = byteBuffer.getShort();
+
+				//int localHeaderlength = headerLength;
+
+				if (headerLength<byteBuffer.limit())
+				{
+					radioTapData = new ArrayList<>(1);
+					presentFlags = new ArrayList<>(1);
+
+					boolean nextPresentFlags = true;
+
+					while (nextPresentFlags)
+					{
+						int presentFlag = byteBuffer.getInt();
+
+						presentFlags.add(new RadioTapFlags(presentFlag));
+
+						if (((presentFlag >> 7) & 0x01) == 1)
+							nextPresentFlags = true;
+						else
+							nextPresentFlags = false;
+					}
+
+					for (int i=0;i<presentFlags.size(); i++)
+					{
+						radioTapData.add(presentFlags.get(i).decode(byteBuffer));
+					}
+				}
+
+				/*
+				presentFlags = new byte[] { frame[7], frame[6], frame[5], frame[4] };
+
+				int size = 0;
+
+				if (((frame[7] >> 7) & 0x01) == 1) {
+					byte[] nextPresentFlags = new byte[] { frame[11], frame[10], frame[9], frame[8] };
+					size +=4;
+					if (((frame[11] >> 7) & 0x01) == 1) {
+						byte[] nextPresentFlags2 = new byte[] { frame[15], frame[14], frame[13], frame[12] };
+						size+=4;
+					}
+				}*/
+				/*
+				if (frame.length >= headerLength + 8) {
+					// fill radio tap header payload according to header length
+					byte[] radioTapPayload = new byte[headerLength - 8 -size];
+
+					if (headerLength > 8) {
+						for (int i = 8+size; i < headerLength; i++) {
+							radioTapPayload[i - 8 -size ] = frame[i];
+						}
+					}
+					leetik.w80211.protocol.radiotap.RadioTapFlags flags = new RadioTapFlags();
+					radioTapData = flags.decode(presentFlags, radioTapPayload);
+					this.flagList=flags;
+				} else {
+					throw new RadioTapException("An error occured while decoding radio tap frame");
+				}
+
+				 */
+			} else {
+				throw new RadioTapException("An error occured while decoding radio tap frame");
+			}
+		}
+		catch (Exception e )
+		{
+			e.printStackTrace();
+			throw new RadioTapException();
+		}
+	}
+
+	@Deprecated
 	public RadioTap(byte[] frame) throws RadioTapException{
 		try
 		{
 			if (frame.length > 7) {
 				headerRevision = frame[0];
 
+				radioTapData = new ArrayList<>();
+
 				headerLength = ByteUtils.convertByteArrayToInt(new byte[] { frame[3], frame[2] });
 
-
-				presentFlags = new byte[] { frame[7], frame[6], frame[5], frame[4] };
+				byte[] presentFlags = new byte[] { frame[7], frame[6], frame[5], frame[4] };
 
 				int size = 0;
 
@@ -96,8 +184,8 @@ public class RadioTap implements IRadioTapFrame {
 							radioTapPayload[i - 8 -size ] = frame[i];
 						}
 					}
-					leetik.w80211.protocol.radiotap.RadioTapFlags flags = new RadioTapFlags();
-					radioTapData = flags.decode(presentFlags, radioTapPayload);
+					leetik.w80211.protocol.radiotap.RadioTapFlags flags = new RadioTapFlags(ByteUtils.convertByteArrayToInt(presentFlags));
+					radioTapData.add(flags.decode(presentFlags, radioTapPayload));
 					this.flagList=flags;
 				} else {
 					throw new RadioTapException("An error occured while decoding radio tap frame");
@@ -126,6 +214,12 @@ public class RadioTap implements IRadioTapFrame {
 
 	@Override
 	public IRadiotapData getRadioTapData() {
+		if (radioTapData==null || radioTapData.size()<1) return null;
+		return radioTapData.get(0);
+	}
+
+	public ArrayList<IRadiotapData> getRadioTapDataArray() {
+		if (radioTapData==null) return null;
 		return radioTapData;
 	}
 

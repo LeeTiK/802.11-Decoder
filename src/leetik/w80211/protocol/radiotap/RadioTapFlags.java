@@ -3,6 +3,8 @@ package leetik.w80211.protocol.radiotap;
 import leetik.w80211.utils.ByteUtils;
 import leetik.w80211.protocol.radiotap.inter.IRadiotapFlags;
 
+import java.nio.ByteBuffer;
+
 /**
  * List of radio tap flags according standards defined in
  * http://www.radiotap.org/ <br/>
@@ -51,6 +53,8 @@ public class RadioTapFlags implements IRadiotapFlags {
 	public boolean mcs = false;
 	public boolean ampdu = false;
 	public boolean vht = false;
+
+	int flag;
 	
 	static byte[] radioTapList = new byte[] { INDEX_TFST, INDEX_FLAGS,
 			INDEX_DATA_RATE, INDEX_CHANNEL, INDEX_FHSS, INDEX_DBM_ANT_SIGNAL,
@@ -59,12 +63,109 @@ public class RadioTapFlags implements IRadiotapFlags {
 			INDEX_DB_ANTENNA_SIGNAL, INDEX_DB_ANTENNA_NOISE, INDEX_RX_FLAGS,
 			INDEX_MCS, INDEX_AMPDU, INDEX_VHT };
 
-	public RadioTapFlags() {
+	public RadioTapFlags(int flag) {
+		this.flag = flag;
+	}
+
+	public RadioTapData decode (ByteBuffer byteBuffer){
+
+		RadioTapData data = new RadioTapData();
+
+		for (int k = 0; k < radioTapList.length; k++) {
+
+			if ((flag & (1 << (radioTapList[k] & 0xFF))) != 0) {
+				switch (radioTapList[k]) {
+					case INDEX_TFST:
+						tfst=true;
+						data.setTFST(byteBuffer.getLong());
+						break;
+					case INDEX_FLAGS:
+						this.flagsPres=true;
+						data.setFlags(byteBuffer.get());
+						break;
+					case INDEX_DATA_RATE:
+						this.dataRate=true;
+						data.setDataRate(byteBuffer.get());
+						break;
+					case INDEX_CHANNEL:
+						this.channel=true;
+						data.setChannel(byteBuffer.getShort(),byteBuffer.getShort());
+						break;
+					case INDEX_FHSS:
+						this.fhss=true;
+						data.setFHSS(byteBuffer.get());
+						byteBuffer.get();
+						break;
+					case INDEX_DBM_ANT_SIGNAL:
+						this.dbmAntSignal=true;
+						data.setDBMAntSignal(byteBuffer.get());
+						break;
+					case INDEX_DBM_ANT_NOISE:
+						this.dbmAntNoise=true;
+						data.setDBMAntNoise(byteBuffer.get());
+						break;
+					case INDEX_LOCK_QUALITY:
+						this.lockQuality=true;
+						data.setLockQuality(byteBuffer.getShort());
+						break;
+					case INDEX_TX_ATTENUATION:
+						this.txAttenuation=true;
+						data.setTxAttenuation(byteBuffer.getShort());
+						break;
+					case INDEX_DB_TX_ATTENUATION:
+						this.dbTxAttenuation=true;
+						data.setDbTxAttenuation(byteBuffer.getShort());
+						break;
+					case INDEX_DBM_TX_POWER:
+						this.dbmTxPower=true;
+						data.setDbmTxPower(byteBuffer.get());
+						break;
+					case INDEX_ANTENNA:
+						this.antenna=true;
+						data.setAntenna(byteBuffer.get());
+						break;
+					case INDEX_DB_ANTENNA_SIGNAL:
+						this.dbAntennaSignal=true;
+						data.setDbAntennaSignal(byteBuffer.get());
+						break;
+					case INDEX_DB_ANTENNA_NOISE:
+						this.dbAntennaNoise=true;
+						data.setDbAntennaNoise(byteBuffer.get());
+						break;
+					case INDEX_RX_FLAGS:
+						this.rxFlags=true;
+						data.setRxFlags(byteBuffer.getShort());
+						break;
+					case INDEX_MCS:
+						this.mcs=true;
+						byte mcsField = byteBuffer.get();
+						byte flagsField = byteBuffer.get();
+						byte knownField = byteBuffer.get();
+
+						data.setMcs(knownField,flagsField,mcsField);
+						break;
+					case INDEX_AMPDU:
+						this.ampdu=true;
+						data.setAmpduStatus(byteBuffer.getLong());
+						break;
+					case INDEX_VHT:
+						this.vht=true;
+						//data.setVHT();
+						byteBuffer.getInt();
+						byteBuffer.getInt();
+						byteBuffer.get();
+						break;
+				}
+			}
+		}
+		return data;
+
 	}
 
 	/**
 	 * Decode from flags properties
 	 */
+	@Deprecated
 	public RadioTapData decode(byte[] flags, byte[] payload) {
 
 		int flagsTotal = ByteUtils.convertByteArrayToInt(flags);

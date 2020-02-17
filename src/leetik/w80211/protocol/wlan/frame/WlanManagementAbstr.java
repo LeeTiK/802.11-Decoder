@@ -66,10 +66,10 @@ public abstract class WlanManagementAbstr implements IWlanManagementFrame,
 			bssid = new byte[] { frame[14], frame[15], frame[16], frame[17],
 					frame[18], frame[19] };
 			sequenceControl = new byte[] { frame[20], frame[21] };
+
 			if (frame.length == 26) {
 				frameBody = new byte[] {};
 				fcs=new byte[]{ frame[22], frame[23],  frame[24], frame[25]};
-				
 			} else {
 				frameBody = new byte[frame.length - 26];
 				for (int i = 22; i < frame.length-4; i++) {

@@ -21,8 +21,8 @@ public class ExtendedSupportedRateElement extends WlanElementAbstr implements IE
 	private byte[] dataRate = null;
 
 	public ExtendedSupportedRateElement(byte[] data) {
-		super(data);
-		dataRate = data;
+			super(data);
+			dataRate = data;
 	}
 
 	/**

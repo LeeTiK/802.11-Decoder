@@ -45,6 +45,7 @@ public class WlanFrameControl implements IWlanFrameControl{
 	/** indicates that all received data frames must be processed in order. */
 	private boolean order = false;
 
+	@Deprecated
 	public WlanFrameControl(byte[] controlFrame) {
 		protocolVersion = (byte) (controlFrame[0] & 0b00000011);
 		type = (byte) ((controlFrame[0] & 0b00001100) >> 2);
@@ -57,6 +58,20 @@ public class WlanFrameControl implements IWlanFrameControl{
 		moreData = (controlFrame[1] & 0b00100000) != 0;
 		wep = (controlFrame[1] & 0b01000000) != 0;
 		order = (controlFrame[1] & 0b10000000) != 0;
+	}
+
+	public WlanFrameControl(short controlFrame) {
+		protocolVersion = (byte) (controlFrame & 0b00000011);
+		type = (byte) ((controlFrame & 0b00001100) >> 2);
+		subType = (byte) ((controlFrame & 0b11110000) >> 4);
+		toDS = (controlFrame & 0b0000000100000000) != 0;
+		fromDS = (controlFrame & 0b0000001000000000) != 0;
+		moreFragmentation = (controlFrame & 0b0000010000000000) != 0;
+		retry = (controlFrame & 0b0000100000000000) != 0;
+		powerManagement = (controlFrame & 0b0001000000000000) != 0;
+		moreData = (controlFrame & 0b0010000000000000) != 0;
+		wep = (controlFrame & 0b0100000000000000) != 0;
+		order = (controlFrame & 0b1000000000000000) != 0;
 	}
 
 	@Override

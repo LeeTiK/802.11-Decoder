@@ -50,45 +50,46 @@ public class RadioTapChannel implements IRadiotapChannel {
 	private boolean dynamicCckOfdmChannel = false;
 	private boolean gfskChannel = false;
 
-	/**
-	 * Build a radio channel object
-	 * 
-	 * @param frequency
-	 * @param turboChannel
-	 * @param cckChannel
-	 * @param ofdmChannel
-	 * @param spectrumChannel2GHZ
-	 * @param spectrumChannel5GHZ
-	 * @param onlyPassiveScanAllowed
-	 * @param dynamicCckOfdmChannel
-	 * @param gfskChannel
-	 */
 	public RadioTapChannel(byte[] frequency, byte[] bitmask) {
 
 		this.frequency = ByteUtils.convertByteArrayToInt(frequency);
+		int bitmaskInt = ByteUtils.convertByteArrayToInt(bitmask);
 
-		if ((bitmask[1] & 0x10) != 0) {
+		radioTapChannel(this.frequency,bitmaskInt);
+
+	}
+
+	public RadioTapChannel(int frequency, int bitmask) {
+
+		radioTapChannel(this.frequency,bitmask);
+	}
+
+	public void radioTapChannel(int frequency, int bitmask) {
+
+		this.frequency = frequency;
+
+		if ((bitmask & 0x1000) != 0) {
 			turboChannel = true;
 		}
-		if ((bitmask[1] & 0x20) != 0) {
+		if ((bitmask & 0x2000) != 0) {
 			cckChannel = true;
 		}
-		if ((bitmask[1] & 0x40) != 0) {
+		if ((bitmask & 0x4000) != 0) {
 			ofdmChannel = true;
 		}
-		if ((bitmask[1] & 0x80) != 0) {
+		if ((bitmask & 0x8000) != 0) {
 			spectrumChannel2GHZ = true;
 		}
-		if ((bitmask[0] & 0x01) != 0) {
+		if ((bitmask & 0x01) != 0) {
 			spectrumChannel5GHZ = true;
 		}
-		if ((bitmask[0] & 0x02) != 0) {
+		if ((bitmask & 0x02) != 0) {
 			onlyPassiveScanAllowed = true;
 		}
-		if ((bitmask[0] & 0x04) != 0) {
+		if ((bitmask & 0x04) != 0) {
 			dynamicCckOfdmChannel = true;
 		}
-		if ((bitmask[0] & 0x08) != 0) {
+		if ((bitmask & 0x08) != 0) {
 			gfskChannel = true;
 		}
 		channelNum = chooseChannelNum();

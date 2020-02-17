@@ -23,6 +23,7 @@
  */
 package leetik.w80211.protocol.radiotap;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import leetik.w80211.utils.ByteUtils;
@@ -43,7 +44,7 @@ public class RadioTapData implements IRadiotapData {
 	 * Function timer when the first bit of the MPDU arrived at the MAC. For
 	 * received frames only.
 	 */
-	private Long TFST = -1l;
+	private long TFST = -1l;
 
 	/** Properties of transmitted and received frames. */
 	private byte flags = 0;
@@ -113,7 +114,7 @@ public class RadioTapData implements IRadiotapData {
 	private byte dbAntennaNoise = 0x00;
 
 	/** Properties of received frames. */
-	private byte[] rxFlags = new byte[] {};
+	private short rxFlags = 0x0000;
 
 	/**
 	 * Modulation coding scheme
@@ -147,6 +148,9 @@ public class RadioTapData implements IRadiotapData {
 	 */
 	private int currentIndex = 0;
 
+	public RadioTapData() {
+	}
+
 	public RadioTapData(byte[] payload) {
 		this.payload = payload;
 	}
@@ -159,11 +163,20 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex = currentIndex + 4;
 	}
 
+	public void setTFST(long tfst) {
+		this.TFST = tfst;
+	}
+
 	public void setFlags() {
 		this.flags = payload[currentIndex];
 		// this is strange but a bit is added in Radiotap when flags is added
 		// without data rate following
 		currentIndex = currentIndex + 2;
+		flagsFieldDefined = true;
+	}
+
+	public void setFlags(byte flags) {
+		this.flags = flags;
 		flagsFieldDefined = true;
 	}
 
@@ -175,6 +188,11 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex++;
 	}
 
+	public void setDataRate(byte dataRate) {
+		this.dataRate = (dataRate & 0xFF) * 500;
+		flagsFieldDefined = true;
+	}
+
 	public void setChannel() {
 		byte[] frequency = ByteUtils.convertLeToBe(Arrays.copyOfRange(payload, currentIndex, currentIndex+2));
 		byte[] bitmask = ByteUtils.convertLeToBe(Arrays.copyOfRange(payload, currentIndex+2, currentIndex+4));
@@ -183,10 +201,20 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex = currentIndex + 4;
 	}
 
+	public void setChannel(short frequency, short bitmask) {
+		this.channel = new RadioTapChannel(frequency,bitmask);
+
+		//currentIndex = currentIndex + 4;
+	}
+
 	public void setFHSS() {
 		this.FHSS = payload[currentIndex];
 		// pattern can be extracted as an additionnal byte
 		currentIndex = currentIndex + 2;
+	}
+
+	public void setFHSS(byte FHSS) {
+		this.FHSS = FHSS;
 	}
 
 	public void setDBMAntSignal() {
@@ -194,9 +222,17 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex++;
 	}
 
+	public void setDBMAntSignal(byte dbmAntSignal) {
+		this.dbmAntSignal = dbmAntSignal;
+	}
+
 	public void setDBMAntNoise() {
 		dbmAntNoise = payload[currentIndex];
 		currentIndex++;
+	}
+
+	public void setDBMAntNoise(byte dbmAntNoise) {
+		this.dbmAntNoise = dbmAntNoise;
 	}
 
 	public void setLockQuality() {
@@ -204,9 +240,17 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex = currentIndex + 2;
 	}
 
+	public void setLockQuality(short lockQuality) {
+		this.lockQuality = lockQuality;
+	}
+
 	public void setTxAttenuation() {
 		txAttenuation = ByteUtils.convertByteArrayToInt(ByteUtils.convertLeToBe(Arrays.copyOfRange(payload, currentIndex, currentIndex+2)));
 		currentIndex = currentIndex + 2;
+	}
+
+	public void setTxAttenuation(short txAttenuation) {
+		this.txAttenuation = txAttenuation;
 	}
 
 	public void setDbTxAttenuation() {
@@ -214,9 +258,17 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex = currentIndex + 2;
 	}
 
+	public void setDbTxAttenuation(short dbTxAttenuation) {
+		this.dbTxAttenuation = dbTxAttenuation;
+	}
+
 	public void setDbmTxPower() {
 		dbmTxPower = payload[currentIndex];
 		currentIndex++;
+	}
+
+	public void setDbmTxPower(byte dbmTxPower) {
+		this.dbmTxPower = dbmTxPower;
 	}
 
 	public void setAntenna() {
@@ -224,9 +276,17 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex++;
 	}
 
+	public void setAntenna(byte antenna) {
+		this.antenna = antenna;
+	}
+
 	public void setDbAntennaSignal() {
 		dbAntennaSignal = payload[currentIndex];
 		currentIndex++;
+	}
+
+	public void setDbAntennaSignal(byte dbAntennaSignal) {
+		this.dbAntennaSignal = dbAntennaSignal;
 	}
 
 	public void setDbAntennaNoise() {
@@ -234,13 +294,25 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex++;
 	}
 
+	public void setDbAntennaNoise(byte dbAntennaNoise) {
+		this.dbAntennaNoise = dbAntennaNoise;
+	}
+
 	public void setRxFlags() {
-		rxFlags = ByteUtils.convertLeToBe(Arrays.copyOfRange(payload, currentIndex, currentIndex+2));
-		if (rxFlags[1]==0x02)
+		rxFlags = (short) ByteUtils.convertByteArrayToInt(ByteUtils.convertLeToBe(Arrays.copyOfRange(payload, currentIndex, currentIndex+2)));
+		if (rxFlags==0x02)
 		{
 			isPlcpCrcErrors=true;
 		}
 		currentIndex = currentIndex + 2;
+	}
+
+	public void setRxFlags(short rxFlags) {
+		this.rxFlags = rxFlags;
+		if (rxFlags==0x02)
+		{
+			isPlcpCrcErrors=true;
+		}
 	}
 
 	public void setMcs() {
@@ -248,9 +320,18 @@ public class RadioTapData implements IRadiotapData {
 		currentIndex = currentIndex + 3;
 	}
 
+	public void setMcs(byte knownField, byte flagsField, byte mcsField ) {
+		mcs = new RadioTapMCS(knownField, flagsField,mcsField);
+		//currentIndex = currentIndex + 3;
+	}
+
 	public void setAmpduStatus() {
 		System.out.println("AMPDU status received... Not treating...");
 		currentIndex = currentIndex + 8;
+	}
+
+	public void setAmpduStatus(long ampdu) {
+		System.out.println("AMPDU status received... Not treating...");
 	}
 
 	public void setVHT() {
@@ -260,6 +341,12 @@ public class RadioTapData implements IRadiotapData {
 				payload[currentIndex + 5], payload[currentIndex + 6],
 				new byte[] { payload[currentIndex + 8],
 						payload[currentIndex + 7] });
+		currentIndex = currentIndex + 9;
+	}
+
+	public void setVHT(byte[] known, byte flags, byte bandwith, byte mcs_nss,
+					   byte coding, byte groupId, byte[] partialAid) {
+		vht = new RadioTapVHT(known,flags,bandwith,mcs_nss,coding,groupId,partialAid);
 		currentIndex = currentIndex + 9;
 	}
 
