@@ -9,4 +9,6 @@ package leetik.w80211.protocol.wlan.frame.data.inter;
 public interface IQosDataFrame {
 
 	public byte[] getQosControl() ;
+
+	public byte[] getData();
 }

@@ -110,6 +110,11 @@ public class RadioTapPresentFlags implements IRadiotapPresentFlags {
 						break;
 					case INDEX_LOCK_QUALITY:
 						this.lockQuality=true;
+						// xz
+						if (dbmAntSignal) {
+							byteBuffer.position(byteBuffer.position()+1);
+						}
+
 						data.setLockQuality(byteBuffer.getShort());
 						break;
 					case INDEX_TX_ATTENUATION:
@@ -157,7 +162,7 @@ public class RadioTapPresentFlags implements IRadiotapPresentFlags {
 						//data.setVHT();
 						byteBuffer.getInt();
 						byteBuffer.getInt();
-						byteBuffer.get();
+						byteBuffer.getInt();
 						break;
 				}
 			}

@@ -82,6 +82,10 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 
 		if (radioTap.isMalformedRadioTap()) return;
 
+		if (dataFrame.position()!=radioTap.getRadioTapDataLength()){
+			System.out.println("ERROR PARSING RADIOTAP");
+		}
+
 		if (radioTap.getRadioTapDataLength()>0)
 		{
 			wlan802dot11Decode(dataFrame,radioTap.getRadioTapData().getFlags().isFCSatEnd());

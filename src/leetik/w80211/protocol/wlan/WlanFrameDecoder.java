@@ -301,68 +301,54 @@ public class WlanFrameDecoder {
 			case WlanFrameType.DATA_FRAME_TYPE:
 				switch (frameControl.getSubType()) {
 					case WlanFrameSubType.DATA_FRAME:
-						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new DataFrame(byteBuffer, frameControl);
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_ACK:
-						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new DataFrame(byteBuffer, frameControl);
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_POLL:
-						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new DataFrame(byteBuffer, frameControl);
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_ACK_PLUS_POLL:
-						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new DataFrame(byteBuffer, frameControl);
 						break;
 					case WlanFrameSubType.DATA_NULL_FRAME:
 						wlanFrame = new NullFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_ACK:
-						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new DataFrame(byteBuffer, frameControl);
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_POLL:
-						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new DataFrame(byteBuffer,frameControl);
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_ACK_PLUS_POLL:
-						wlanFrame = new DataFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new DataFrame(byteBuffer,frameControl);
 						break;
 					case WlanFrameSubType.DATA_QOS_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,
-								frameControl.isToDS(), frameControl.isFromDS());
+						wlanFrame = new QosDataFrame(byteBuffer, frameControl);
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_ACK_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,
-								frameControl.isToDS(), frameControl.isFromDS());
+						wlanFrame = new QosDataFrame(byteBuffer, frameControl);
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_POLL_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,
-								frameControl.isToDS(), frameControl.isFromDS());
+						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_ACK_PLUS_POLL_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,
-								frameControl.isToDS(), frameControl.isFromDS());
+						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
 						break;
 					case WlanFrameSubType.DATA_QOS_NULL_FRAME:
 						wlanFrame = new NullFrame(byteBuffer, frameControl.isToDS(),
 								frameControl.isFromDS());
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_ACK_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,
-								frameControl.isToDS(), frameControl.isFromDS());
+						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_POLL_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,
-								frameControl.isToDS(), frameControl.isFromDS());
+						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_ACK_PLUS_POLL_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,
-								frameControl.isToDS(), frameControl.isFromDS());
+						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
 						break;
 				}
 				break;

@@ -105,7 +105,7 @@ public class RadioTap implements IRadioTapFrame {
 
 						presentFlags.add(new RadioTapPresentFlags(presentFlag));
 
-						if (((presentFlag >> 7) & 0x01) == 1)
+						if ((presentFlag & 0b00100000000000000000000000000000) != 0)
 							nextPresentFlags = true;
 						else
 							nextPresentFlags = false;

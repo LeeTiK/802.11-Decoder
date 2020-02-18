@@ -7,5 +7,5 @@ package leetik.w80211.protocol.wlan.frame.data.inter;
  * 
  */
 public interface IDataFrame {
-
+    public byte[] getData();
 }
