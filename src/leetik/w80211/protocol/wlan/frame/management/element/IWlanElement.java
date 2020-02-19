@@ -18,6 +18,7 @@ public interface IWlanElement {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public byte getElementId();
 	
 	/**
@@ -25,5 +26,9 @@ public interface IWlanElement {
 	 * @return
 	 */
 	public byte[] getData();
+
+	public WlanElementID getWlanElementId();
+
+	public boolean isDecodeError();
 	
 }

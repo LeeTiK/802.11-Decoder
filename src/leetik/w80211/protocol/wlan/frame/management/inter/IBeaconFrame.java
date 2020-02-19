@@ -3,6 +3,7 @@ package leetik.w80211.protocol.wlan.frame.management.inter;
 import java.util.List;
 
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
+import leetik.w80211.protocol.wlan.frame.management.other.CapabilitiesInformation;
 
 /**
  * Management frame - Beacon frame<br/>
@@ -22,11 +23,11 @@ import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
  */
 public interface IBeaconFrame {
 
-	public byte[] getTimestamp();
+	public long getTimestamp();
 	
-	public byte[] getBeaconInterval();
+	public int getBeaconInterval();
 	
-	public byte[] getCapabilityInfo() ;
+	public CapabilitiesInformation getCapabilityInfo() ;
 	
 	public List<IWlanElement> getTaggedParameter();
 	

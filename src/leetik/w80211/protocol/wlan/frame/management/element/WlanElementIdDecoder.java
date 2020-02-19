@@ -5,13 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import leetik.w80211.protocol.wlan.WlanDecoder;
-import leetik.w80211.protocol.wlan.frame.management.element.impl.DsssParameterSetElement;
-import leetik.w80211.protocol.wlan.frame.management.element.impl.ErpElement;
-import leetik.w80211.protocol.wlan.frame.management.element.impl.ExtendedSupportedRateElement;
-import leetik.w80211.protocol.wlan.frame.management.element.impl.HTCapabilitiesElement;
-import leetik.w80211.protocol.wlan.frame.management.element.impl.SSIDElement;
-import leetik.w80211.protocol.wlan.frame.management.element.impl.SupportedRateElement;
-import leetik.w80211.protocol.wlan.frame.management.element.impl.TimElement;
+import leetik.w80211.protocol.wlan.frame.management.element.impl.*;
 
 /**
  * Decode Wlan 802.11 element id
@@ -75,9 +69,9 @@ public class WlanElementIdDecoder {
 					done=true;
 					element = new ErpElement(treatedFrame);
 					break;
-				case DsssParameterSetElement.id:
+				case DsParameterSetElement.id:
 					done=true;
-					element = new DsssParameterSetElement(treatedFrame);
+					element = new DsParameterSetElement(treatedFrame);
 					break;
 				}
 				if (!done && WlanDecoder.DISPLAY_ELEMENT_NOT_DECODED)
@@ -112,7 +106,7 @@ public class WlanElementIdDecoder {
 			while (!endOfFrame) {
 				byteBuffer.mark();
 
-				byte elementId = byteBuffer.get();
+				WlanElementID wlanElementID = WlanElementID.getWlanElementID(byteBuffer.get());
 				int length = byteBuffer.get() & 0xFF;
 
 				if (length>byteBuffer.remaining()){
@@ -123,12 +117,42 @@ public class WlanElementIdDecoder {
 				byte[] treatedFrame = new byte[length];
 				IWlanElement element = null;
 
+				byteBuffer.mark();
 				byteBuffer.get(treatedFrame);
+				byteBuffer.reset();
 				//System.arraycopy(currentFrame, 2, treatedFrame, 0, length);
 
-				boolean done = false;
+				switch (wlanElementID){
+					case SSID:
+						element = new SSIDElement(treatedFrame);
+						break;
+					case SUPPORTED_RATES:
+						element = new SupportedRateElement(treatedFrame);
+						break;
+					case DS_PARAMETER:
+						element = new DsParameterSetElement(treatedFrame);
+						break;
+					case TIM:
+						element = new TimElement(treatedFrame);
+						break;
+					case ERP_INFORMATION:
+						element = new ErpElement(treatedFrame);
+						break;
+					case HT_CAPABILITIES:
+						element = new HTCapabilitiesElement(treatedFrame);
+						break;
+					case RSN_INFORMATION:
+						element = new RsnInformation(treatedFrame);
+						break;
+					case EXTENDED_SUPPORTED_RATE:
+						element = new ExtendedSupportedRateElement(treatedFrame);
+						break;
+					case NOT_DECODED:
+						break;
+					default:
+						throw new IllegalStateException("Unexpected value: " + wlanElementID);
 
-				switch (elementId) {
+					/*
 					case SSIDElement.id:
 						done=true;
 						element = new SSIDElement(treatedFrame);
@@ -156,15 +180,17 @@ public class WlanElementIdDecoder {
 					case DsssParameterSetElement.id:
 						done=true;
 						element = new DsssParameterSetElement(treatedFrame);
-						break;
+						break;*/
 				}
-				if (!done && WlanDecoder.DISPLAY_ELEMENT_NOT_DECODED)
+				if (wlanElementID==WlanElementID.NOT_DECODED && WlanDecoder.DISPLAY_ELEMENT_NOT_DECODED)
 				{
-					System.out.println("Element id not decoded => " + (elementId & 0XFF));
+					System.out.println("Element id not decoded => " + (wlanElementID.getTagNumber() & 0XFF));
 				}
 				if (element != null) {
 					listOfElements.add(element);
 				}
+
+				byteBuffer.position(byteBuffer.position()+length);
 
 				if (byteBuffer.remaining()<2) {
 					endOfFrame = true;

@@ -1,6 +1,7 @@
 package leetik.w80211.protocol.wlan.frame.management.element.impl;
 
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
+import leetik.w80211.protocol.wlan.frame.management.element.WlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.inter.IDsssParameterSetElement;
 
 /**
@@ -15,7 +16,7 @@ import leetik.w80211.protocol.wlan.frame.management.element.inter.IDsssParameter
  * @author Bertrand Martel
  *
  */
-public class DsssParameterSetElement extends WlanElementAbstr implements IDsssParameterSetElement {
+public class DsParameterSetElement extends WlanElementAbstr implements IDsssParameterSetElement {
 
 	public final static int id = 3;
 
@@ -31,7 +32,7 @@ public class DsssParameterSetElement extends WlanElementAbstr implements IDsssPa
 	 * @param length
 	 * @param data
 	 */
-	public DsssParameterSetElement(byte[] data) {
+	public DsParameterSetElement(byte[] data) {
 		super(data);
 		currentChannel = data[0] & 0xFF;
 
@@ -96,6 +97,11 @@ public class DsssParameterSetElement extends WlanElementAbstr implements IDsssPa
 	@Override
 	public byte getElementId() {
 		return id;
+	}
+
+	@Override
+	public WlanElementID getWlanElementId() {
+		return WlanElementID.DS_PARAMETER;
 	}
 
 }

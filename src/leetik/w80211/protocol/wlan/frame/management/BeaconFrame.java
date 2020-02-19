@@ -5,8 +5,11 @@ import java.util.List;
 
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
+import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
+import leetik.w80211.protocol.wlan.frame.management.element.WlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
 import leetik.w80211.protocol.wlan.frame.management.inter.IBeaconFrame;
+import leetik.w80211.protocol.wlan.frame.management.other.CapabilitiesInformation;
 
 /**
  * Management frame - Beacon frame<br/>
@@ -29,18 +32,18 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 	/**
 	 * timestamp value for this frame (for sync)
 	 */
-	private byte[] timestamp = null;
+	private long timestamp = 0;
 
 	/**
 	 * This is the time interval between beacon transmissions
 	 */
-	private byte[] beaconInterval = null;
+	private int beaconInterval = 0;
 
 	/**
 	 * Capability information field spans to 16 bits and contain information
 	 * about capability of the device/network.
 	 */
-	private byte[] capabilityInfo = null;
+	private CapabilitiesInformation capabilityInfo = null;
 
 	/**
 	 * parameter identified by their tag id. A collection of these id can be
@@ -59,21 +62,6 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 	public BeaconFrame(byte[] frame) {
 		super(frame);
 		byte[] frameBody = getFrameBody();
-
-		timestamp = new byte[8];
-		for (int i = 0; i < timestamp.length; i++) {
-			timestamp[timestamp.length - 1 - i] = frameBody[i];
-		}
-
-		beaconInterval = new byte[2];
-		for (int i = 8; i < 10; i++) {
-			beaconInterval[10 - i - 1] = frameBody[i];
-		}
-
-		capabilityInfo = new byte[2];
-		for (int i = 10; i < 12; i++) {
-			capabilityInfo[12 - i - 1] = frameBody[i];
-		}
 
 		// manage tagged parameter list with element id decoder
 		byte[] taggedParameterArray = null;
@@ -94,31 +82,28 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 		super(byteBuffer);
 		//byte[] frameBody = getFrameBody();
 
-		timestamp = new byte[8];
-		byteBuffer.get(timestamp);
+		timestamp = byteBuffer.getLong();
 
-		beaconInterval = new byte[2];
-		byteBuffer.get(beaconInterval);
+		beaconInterval = byteBuffer.getShort();
 
-		capabilityInfo = new byte[2];
-		byteBuffer.get(capabilityInfo);
+		capabilityInfo = new CapabilitiesInformation(byteBuffer.getShort());
 
 		WlanElementIdDecoder decoder = new WlanElementIdDecoder();
 		taggedParameter = decoder.decode(byteBuffer);
 	}
 
 	@Override
-	public byte[] getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
 	
 	@Override
-	public byte[] getBeaconInterval() {
+	public int getBeaconInterval() {
 		return beaconInterval;
 	}
 	
 	@Override
-	public byte[] getCapabilityInfo() {
+	public CapabilitiesInformation getCapabilityInfo() {
 		return capabilityInfo;
 	}
 	
@@ -127,4 +112,14 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 		return taggedParameter;
 	}
 
+	public WlanElementAbstr getTaggedParameter(WlanElementID wlanElementID){
+		if (taggedParameter==null) return null;
+
+		for (int i=0; i<taggedParameter.size(); i++)
+		{
+			if (taggedParameter.get(i).getWlanElementId()==wlanElementID) return (WlanElementAbstr) taggedParameter.get(i);
+		}
+
+		return null;
+	}
 }

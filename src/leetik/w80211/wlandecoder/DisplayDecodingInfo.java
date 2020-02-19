@@ -125,9 +125,9 @@ public class DisplayDecodingInfo {
 					
 					IBeaconFrame beaconFrame =(IBeaconFrame) wlanDecodedFrameList.get(i).getFrame();
 					
-					System.out.println(tab+tab+"timestamp              : "+ ByteUtils.byteArrayToStringMessage("",beaconFrame.getTimestamp(), '|'));
-					System.out.println(tab+tab+"beaconInterval         : "+ ByteUtils.convertByteArrayToInt(beaconFrame.getBeaconInterval()));
-					System.out.println(tab+tab+"capability information : "+ ByteUtils.byteArrayToStringMessage("", beaconFrame.getCapabilityInfo(),'|'));
+					System.out.println(tab+tab+"timestamp              : "+ beaconFrame.getTimestamp());
+					System.out.println(tab+tab+"beaconInterval         : "+ beaconFrame.getBeaconInterval());
+					System.out.println(tab+tab+"capability information : "+ beaconFrame.getCapabilityInfo().getCapabilitiesinfo());
 					
 					for (int j = 0; j< beaconFrame.getTaggedParameter().size(); j++) {
 						displayTaggedParameter(beaconFrame.getTaggedParameter().get(j));
