@@ -48,7 +48,7 @@ public class RadioTapData implements IRadiotapData {
 	private long TFST = -1l;
 
 	/** Properties of transmitted and received frames. */
-	private RadioTapFlags flags = null;
+	private RadioTapFlags flags = new RadioTapFlags((byte)0x00);
 
 	/** TX/RX data rate in Mbps */
 	private int dataRate = 0;
@@ -150,6 +150,7 @@ public class RadioTapData implements IRadiotapData {
 	private int currentIndex = 0;
 
 	public RadioTapData() {
+
 	}
 
 	public RadioTapData(byte[] payload) {
