@@ -43,6 +43,8 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 
 	public static boolean DISPLAY_ELEMENT_NOT_DECODED = false;
 
+	public static boolean DISPLAY_ERROR = false;
+
 	public static boolean DIRECT_BYTE_BUFFER = false;
 	/**
 	 * radio tap object
@@ -83,7 +85,10 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 		if (radioTap.isMalformedRadioTap()) return;
 
 		if (dataFrame.position()!=radioTap.getRadioTapDataLength()){
-			System.out.println("ERROR PARSING RADIOTAP");
+			//cut off radiotap
+			dataFrame.position(radioTap.getRadioTapDataLength());
+
+			if (DISPLAY_ERROR) System.out.println("ERROR PARSING RADIOTAP");
 		}
 
 		if (radioTap.getRadioTapDataLength()>0)
