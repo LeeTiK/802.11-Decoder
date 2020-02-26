@@ -194,7 +194,7 @@ public class RadioTap implements IRadioTapFrame {
 
 	@Override
 	public IRadiotapData getRadioTapData() {
-		if (radioTapData==null || radioTapData.size()<1) return null;
+		if (radioTapData==null || radioTapData.isEmpty()) return null;
 		return radioTapData.get(0);
 	}
 
