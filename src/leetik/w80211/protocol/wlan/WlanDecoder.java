@@ -28,6 +28,7 @@ import leetik.w80211.protocol.radiotap.inter.IRadioTapFrame;
 import leetik.w80211.protocol.wlan.frame.IWlanFrame;
 import leetik.w80211.protocol.wlan.inter.IWlan802dot11Radiotap;
 import leetik.w80211.protocol.wlan.inter.IWlanFrameControl;
+import leetik.w80211.protocol.wlan.utils.OtherUtils;
 import leetik.w80211.utils.RadioTapException;
 
 import java.nio.ByteBuffer;
@@ -64,13 +65,7 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 	 * initialize w80211 driver
 	 */
 	public WlanDecoder(byte[] dataFrame) {
-		if (DIRECT_BYTE_BUFFER)
-		{
-			this.dataFrame = ByteBuffer.allocateDirect(dataFrame.length);
-		}
-		else {
-			this.dataFrame = ByteBuffer.allocate(dataFrame.length);
-		}
+		this.dataFrame = OtherUtils.createByteBuffer(dataFrame.length);
 
 		this.dataFrame.put(dataFrame);
 		this.dataFrame.order(ByteOrder.LITTLE_ENDIAN);
