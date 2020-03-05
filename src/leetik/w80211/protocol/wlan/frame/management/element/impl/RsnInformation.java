@@ -1,7 +1,7 @@
 package leetik.w80211.protocol.wlan.frame.management.element.impl;
 
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
-import leetik.w80211.protocol.wlan.frame.management.element.WlanElementID;
+import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ public class RsnInformation extends WlanElementAbstr {
     short pmkCount;
 
 
+    @Deprecated
     public RsnInformation(byte[] data) {
         super(data);
     }
@@ -58,7 +59,7 @@ public class RsnInformation extends WlanElementAbstr {
     }
 
     @Override
-    public WlanElementID getWlanElementId() {
-        return WlanElementID.RSN_INFORMATION;
+    public EWlanElementID getWlanElementId() {
+        return EWlanElementID.RSN_INFORMATION;
     }
 }

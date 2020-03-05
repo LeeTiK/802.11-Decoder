@@ -1,7 +1,7 @@
 package leetik.w80211.protocol.wlan.frame.management.element.impl;
 
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
-import leetik.w80211.protocol.wlan.frame.management.element.WlanElementID;
+import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.inter.IErpElement;
 
 /**
@@ -70,8 +70,8 @@ public class ErpElement extends WlanElementAbstr implements IErpElement {
 	}
 
 	@Override
-	public WlanElementID getWlanElementId() {
-		return WlanElementID.ERP_INFORMATION;
+	public EWlanElementID getWlanElementId() {
+		return EWlanElementID.ERP_INFORMATION;
 	}
 
 }

@@ -27,7 +27,7 @@ public interface IWlanElement {
 	 */
 	public byte[] getData();
 
-	public WlanElementID getWlanElementId();
+	public EWlanElementID getWlanElementId();
 
 	public boolean isDecodeError();
 	

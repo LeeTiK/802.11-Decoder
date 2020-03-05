@@ -95,7 +95,7 @@ public class WlanElementIdDecoder {
 		return listOfElements;
 	}
 
-	public List<IWlanElement> decode(ByteBuffer byteBuffer) {
+	public static List<IWlanElement> decode(ByteBuffer byteBuffer) {
 		// list of w80211 element id to be created
 		List<IWlanElement> listOfElements = new ArrayList<IWlanElement>();
 		if (byteBuffer.remaining() >= 2) {
@@ -106,7 +106,7 @@ public class WlanElementIdDecoder {
 			while (!endOfFrame) {
 				byteBuffer.mark();
 
-				WlanElementID wlanElementID = WlanElementID.getWlanElementID(byteBuffer.get());
+				EWlanElementID EWlanElementID = leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID.getWlanElementID(byteBuffer.get());
 				int length = byteBuffer.get() & 0xFF;
 
 				if (length>byteBuffer.remaining()){
@@ -122,7 +122,7 @@ public class WlanElementIdDecoder {
 				byteBuffer.reset();
 				//System.arraycopy(currentFrame, 2, treatedFrame, 0, length);
 
-				switch (wlanElementID){
+				switch (EWlanElementID){
 					case SSID:
 						element = new SSIDElement(treatedFrame);
 						break;
@@ -147,44 +147,17 @@ public class WlanElementIdDecoder {
 					case EXTENDED_SUPPORTED_RATE:
 						element = new ExtendedSupportedRateElement(treatedFrame);
 						break;
+					case VENDOR_SPECIFIC:
+						element = new VendorSpecificElement(treatedFrame);
+						break;
 					case NOT_DECODED:
 						break;
 					default:
-						throw new IllegalStateException("Unexpected value: " + wlanElementID);
-
-					/*
-					case SSIDElement.id:
-						done=true;
-						element = new SSIDElement(treatedFrame);
-						break;
-					case SupportedRateElement.id:
-						done=true;
-						element = new SupportedRateElement(treatedFrame);
-						break;
-					case HTCapabilitiesElement.id:
-						done=true;
-						element = new HTCapabilitiesElement(treatedFrame);
-						break;
-					case ExtendedSupportedRateElement.id:
-						done=true;
-						element = new ExtendedSupportedRateElement(treatedFrame);
-						break;
-					case TimElement.id:
-						done=true;
-						element = new TimElement(treatedFrame);
-						break;
-					case ErpElement.id:
-						done=true;
-						element = new ErpElement(treatedFrame);
-						break;
-					case DsssParameterSetElement.id:
-						done=true;
-						element = new DsssParameterSetElement(treatedFrame);
-						break;*/
+						throw new IllegalStateException("Unexpected value: " + EWlanElementID);
 				}
-				if (wlanElementID==WlanElementID.NOT_DECODED && WlanDecoder.DISPLAY_ELEMENT_NOT_DECODED)
+				if (EWlanElementID == leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID.NOT_DECODED && WlanDecoder.DISPLAY_ELEMENT_NOT_DECODED)
 				{
-					System.out.println("Element id not decoded => " + (wlanElementID.getTagNumber() & 0XFF));
+					System.out.println("Element id not decoded => " + (EWlanElementID.getTagNumber() & 0XFF));
 				}
 				if (element != null) {
 					listOfElements.add(element);

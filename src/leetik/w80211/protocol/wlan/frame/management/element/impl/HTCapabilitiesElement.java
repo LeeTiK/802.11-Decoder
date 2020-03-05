@@ -1,7 +1,7 @@
 package leetik.w80211.protocol.wlan.frame.management.element.impl;
 
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
-import leetik.w80211.protocol.wlan.frame.management.element.WlanElementID;
+import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.inter.IHtCapabilitiesElement;
 import leetik.w80211.protocol.wlan.frame.management.element.subelement.HtCapabilityInformation;
 import leetik.w80211.protocol.wlan.frame.management.element.subelement.McsSupportedSet;
@@ -70,7 +70,7 @@ public class HTCapabilitiesElement extends WlanElementAbstr implements IHtCapabi
 	}
 
 	@Override
-	public WlanElementID getWlanElementId() {
+	public EWlanElementID getWlanElementId() {
 		return null;
 	}
 

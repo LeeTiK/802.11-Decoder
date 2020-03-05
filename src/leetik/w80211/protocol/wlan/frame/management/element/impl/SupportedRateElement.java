@@ -1,7 +1,7 @@
 package leetik.w80211.protocol.wlan.frame.management.element.impl;
 
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
-import leetik.w80211.protocol.wlan.frame.management.element.WlanElementID;
+import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.inter.ISupportedRateElement;
 
 /**
@@ -46,8 +46,8 @@ public class SupportedRateElement extends WlanElementAbstr implements ISupported
 	}
 
 	@Override
-	public WlanElementID getWlanElementId() {
-		return WlanElementID.SUPPORTED_RATES;
+	public EWlanElementID getWlanElementId() {
+		return EWlanElementID.SUPPORTED_RATES;
 	}
 
 	@Override

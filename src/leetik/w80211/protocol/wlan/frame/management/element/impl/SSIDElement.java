@@ -1,10 +1,9 @@
 package leetik.w80211.protocol.wlan.frame.management.element.impl;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
-import leetik.w80211.protocol.wlan.frame.management.element.WlanElementID;
+import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.inter.ISsidElement;
 
 /**
@@ -68,8 +67,8 @@ public class SSIDElement extends WlanElementAbstr implements ISsidElement {
 	}
 
 	@Override
-	public WlanElementID getWlanElementId() {
-		return WlanElementID.SSID;
+	public EWlanElementID getWlanElementId() {
+		return EWlanElementID.SSID;
 	}
 
 	@Override

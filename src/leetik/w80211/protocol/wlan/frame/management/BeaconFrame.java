@@ -6,7 +6,7 @@ import java.util.List;
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
-import leetik.w80211.protocol.wlan.frame.management.element.WlanElementID;
+import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
 import leetik.w80211.protocol.wlan.frame.management.inter.IBeaconFrame;
 import leetik.w80211.protocol.wlan.frame.management.other.CapabilitiesInformation;
@@ -88,8 +88,8 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 
 		capabilityInfo = new CapabilitiesInformation(byteBuffer.getShort());
 
-		WlanElementIdDecoder decoder = new WlanElementIdDecoder();
-		taggedParameter = decoder.decode(byteBuffer);
+		//WlanElementIdDecoder decoder = new WlanElementIdDecoder();
+		taggedParameter = WlanElementIdDecoder.decode(byteBuffer);
 	}
 
 	@Override
@@ -112,12 +112,12 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 		return taggedParameter;
 	}
 
-	public WlanElementAbstr getTaggedParameter(WlanElementID wlanElementID){
+	public WlanElementAbstr getTaggedParameter(EWlanElementID EWlanElementID){
 		if (taggedParameter==null) return null;
 
 		for (int i=0; i<taggedParameter.size(); i++)
 		{
-			if (taggedParameter.get(i).getWlanElementId()==wlanElementID) return (WlanElementAbstr) taggedParameter.get(i);
+			if (taggedParameter.get(i).getWlanElementId()== EWlanElementID) return (WlanElementAbstr) taggedParameter.get(i);
 		}
 
 		return null;
