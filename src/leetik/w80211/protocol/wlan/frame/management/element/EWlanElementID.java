@@ -1,6 +1,6 @@
 package leetik.w80211.protocol.wlan.frame.management.element;
 
-public enum WlanElementID {
+public enum EWlanElementID {
 
     SSID(0),
     SUPPORTED_RATES(1),
@@ -10,11 +10,12 @@ public enum WlanElementID {
     HT_CAPABILITIES(45),
     RSN_INFORMATION(48),
     EXTENDED_SUPPORTED_RATE(50),
+    VENDOR_SPECIFIC(221),
     NOT_DECODED((byte)0xFF);
 
     private byte tagNumber;
 
-    WlanElementID(int number)
+    EWlanElementID(int number)
     {
         tagNumber = (byte) number;
     }
@@ -23,9 +24,9 @@ public enum WlanElementID {
         return tagNumber;
     }
 
-    public static WlanElementID getWlanElementID(int tagNumber) {
-        for (WlanElementID wlanElementID : WlanElementID.values()) {
-            if (wlanElementID.getTagNumber() == tagNumber) return wlanElementID;
+    public static EWlanElementID getWlanElementID(int tagNumber) {
+        for (EWlanElementID EWlanElementID : EWlanElementID.values()) {
+            if (EWlanElementID.getTagNumber() == tagNumber) return EWlanElementID;
         }
         return NOT_DECODED;
     }
