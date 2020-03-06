@@ -56,7 +56,7 @@ public class RadioTap implements IRadioTapFrame {
 	/** * entire length of the radiotap data */
 	private int headerLength = 0;
 
-	private IRadiotapPresentFlags flagList = null;
+//	private IRadiotapPresentFlags flagList = null;
 	
 	/** * bitmask for values that will be present in radio tap payload */
 	private ArrayList<RadioTapPresentFlags> presentFlags = null;
@@ -166,7 +166,7 @@ public class RadioTap implements IRadioTapFrame {
 					}
 					RadioTapPresentFlags flags = new RadioTapPresentFlags(ByteUtils.convertByteArrayToInt(presentFlags));
 					radioTapData.add(flags.decode(presentFlags, radioTapPayload));
-					this.flagList=flags;
+					//this.flagList=flags;
 				} else {
 					throw new RadioTapException("An error occured while decoding radio tap frame");
 				}
@@ -203,9 +203,13 @@ public class RadioTap implements IRadioTapFrame {
 		return radioTapData;
 	}
 
-	@Override
+	@Deprecated
 	public IRadiotapPresentFlags getRadioTapFlagList() {
-		return flagList;
+		return presentFlags.get(0);
+	}
+
+	public ArrayList<RadioTapPresentFlags> getRadioTapFlagListArray() {
+		return presentFlags;
 	}
 
 	@Override
