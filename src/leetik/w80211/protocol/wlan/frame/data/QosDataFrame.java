@@ -1,6 +1,10 @@
 package leetik.w80211.protocol.wlan.frame.data;
 
+import leetik.w80211.protocol.authentication.AuthenticationDecoder;
+import leetik.w80211.protocol.other.LogicalLinkControl;
+import leetik.w80211.protocol.wlan.WlanDecoder;
 import leetik.w80211.protocol.wlan.WlanFrameControl;
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
 import leetik.w80211.protocol.wlan.frame.WlanDataAbstr;
 import leetik.w80211.protocol.wlan.frame.data.inter.IQosDataFrame;
 import leetik.w80211.protocol.wlan.inter.IWlanFrameControl;
@@ -24,6 +28,10 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 
 	private byte[] parametersCCMP;
 
+	LogicalLinkControl logicalLinkControl = null;
+
+	Object dataObject = null;
+
 	/**
 	 * Decode QOS data frame
 	 * 
@@ -40,14 +48,14 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 		qosControl = new byte[] { getFrameBody()[1], getFrameBody()[0] };
 	}
 
-	public QosDataFrame(ByteBuffer byteBuffer, IWlanFrameControl wlanFrameControl) {
-		super(byteBuffer, wlanFrameControl.isToDS(), wlanFrameControl.isFromDS());
+	public QosDataFrame(ByteBuffer byteBuffer, WlanFrameDecoder wlanDecoder) {
+		super(byteBuffer, wlanDecoder);
 
 		qosControl = new byte[2];
 
 		byteBuffer.get(qosControl);
 
-		if (wlanFrameControl.isWep()) {
+		if ( wlanDecoder.getFrameControl().isWep()) {
 			if (byteBuffer.remaining() <= 8) return;
 
 			parametersCCMP = new byte[8];
@@ -55,11 +63,23 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 			byteBuffer.get(parametersCCMP);
 		}
 
+		byteBuffer.mark();
+
 		data = new byte[byteBuffer.remaining()];
 
 		if (byteBuffer.remaining()<=0) return;
 
 		byteBuffer.get(data);
+
+		if (! wlanDecoder.getFrameControl().isWep()) {
+			byteBuffer.reset();
+			logicalLinkControl = new LogicalLinkControl(byteBuffer);
+			int k = logicalLinkControl.getType();
+			if (logicalLinkControl.getType()==0x888e)
+			{
+				dataObject= new AuthenticationDecoder(wlanDecoder,byteBuffer);
+			}
+		}
 	}
 
 	@Override
@@ -72,4 +92,11 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 		return data;
 	}
 
+	public Object getDataObject() {
+		return dataObject;
+	}
+
+	public LogicalLinkControl getLogicalLinkControl() {
+		return logicalLinkControl;
+	}
 }

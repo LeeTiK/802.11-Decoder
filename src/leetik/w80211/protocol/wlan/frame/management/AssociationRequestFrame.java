@@ -3,6 +3,7 @@ package leetik.w80211.protocol.wlan.frame.management;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
@@ -104,5 +105,10 @@ public class AssociationRequestFrame extends WlanManagementAbstr implements IAss
 	@Override
 	public byte[] getListenInterval() {
 		return listenInterval;
+	}
+
+	@Override
+	public WlanFrameDecoder getWlanDecoder() {
+		return null;
 	}
 }

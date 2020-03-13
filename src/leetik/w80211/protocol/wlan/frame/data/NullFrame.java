@@ -1,5 +1,6 @@
 package leetik.w80211.protocol.wlan.frame.data;
 
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
 import leetik.w80211.protocol.wlan.frame.WlanDataAbstr;
 import leetik.w80211.protocol.wlan.frame.data.inter.INullFrame;
 
@@ -28,7 +29,7 @@ public class NullFrame extends WlanDataAbstr implements INullFrame {
 		super(frame, toDS, fromDS);
 	}
 
-	public NullFrame(ByteBuffer byteBuffer, boolean toDS, boolean fromDS) {
-		super(byteBuffer, toDS, fromDS);
+	public NullFrame(ByteBuffer byteBuffer, WlanFrameDecoder wlanFrameDecoder) {
+		super(byteBuffer, wlanFrameDecoder);
 	}
 }

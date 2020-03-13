@@ -1,6 +1,8 @@
 package leetik.w80211.protocol.wlan.frame;
 
 
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -167,4 +169,9 @@ public abstract class WlanManagementAbstr implements IWlanManagementFrame,
 		return frameBody;
 	}
 
+
+	@Override
+	public WlanFrameDecoder getWlanDecoder() {
+		return null;
+	}
 }

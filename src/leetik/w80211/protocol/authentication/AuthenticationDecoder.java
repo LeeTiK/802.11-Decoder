@@ -1,15 +1,20 @@
 package leetik.w80211.protocol.authentication;
 
+import leetik.w80211.protocol.wlan.WlanDecoder;
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
 import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
 
 public class AuthenticationDecoder {
+
+    private WlanFrameDecoder wlanDecoder;
 
     byte version;
 
@@ -35,8 +40,19 @@ public class AuthenticationDecoder {
 
     List<IWlanElement> taggedParameter;
 
+    public AuthenticationDecoder(WlanFrameDecoder wlanDecoder, ByteBuffer byteBuffer) {
+        decode(byteBuffer);
+
+        this.wlanDecoder = wlanDecoder;
+    }
+
     public AuthenticationDecoder(ByteBuffer byteBuffer)
     {
+        decode(byteBuffer);
+    }
+
+    private void decode(ByteBuffer byteBuffer){
+        byteBuffer.order(ByteOrder.BIG_ENDIAN);
         version = byteBuffer.get();
         type = byteBuffer.get();
         length = byteBuffer.getShort();
@@ -65,6 +81,7 @@ public class AuthenticationDecoder {
         wpaKeyDataLength = byteBuffer.getShort();
 
         taggedParameter = WlanElementIdDecoder.decode(byteBuffer);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     }
 
     public byte getKeyDescriptorType() {
@@ -158,4 +175,7 @@ public class AuthenticationDecoder {
        // return false;
     }
 
+    public WlanFrameDecoder getWlanFrameDecoder() {
+        return wlanDecoder;
+    }
 }

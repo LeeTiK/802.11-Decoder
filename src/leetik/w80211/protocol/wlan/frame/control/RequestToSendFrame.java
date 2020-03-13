@@ -1,5 +1,6 @@
 package leetik.w80211.protocol.wlan.frame.control;
 
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
 import leetik.w80211.protocol.wlan.frame.IWlanFrame;
 import leetik.w80211.protocol.wlan.frame.control.inter.IRequestToSendFrame;
 import leetik.w80211.protocol.wlan.inter.IWlanControlFrame;
@@ -84,4 +85,8 @@ public class RequestToSendFrame implements IWlanFrame, IWlanControlFrame, IReque
 		return receiverAddr;
 	}
 
+	@Override
+	public WlanFrameDecoder getWlanDecoder() {
+		return null;
+	}
 }

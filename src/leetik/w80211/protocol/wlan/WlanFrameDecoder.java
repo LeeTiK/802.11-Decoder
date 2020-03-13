@@ -63,6 +63,8 @@ public class WlanFrameDecoder {
 	 * contains control information used for defining the type of 802.11 MAC
 	 * frame and providing information
 	 */
+	WlanDecoder wlanDecoder;
+
 	private IWlanFrameControl frameControl = null;
 
 	private IWlanFrame wlanFrame = null;
@@ -217,9 +219,18 @@ public class WlanFrameDecoder {
 		}
 	}
 
-	public WlanFrameDecoder(ByteBuffer byteBuffer, boolean fcs) {
+	public WlanFrameDecoder(ByteBuffer byteBuffer, WlanDecoder wlanDecoder) {
+
+		this.wlanDecoder = wlanDecoder;
 
 		frameControl = new WlanFrameControl(byteBuffer.getShort());
+
+		boolean fcs = false;
+
+		if (wlanDecoder.getRadioTap().getRadioTapDataLength()>0)
+		{
+			fcs = wlanDecoder.getRadioTap().getRadioTapData().getFlags().isFCSatEnd();
+		}
 
 		if (fcs)
 		{
@@ -301,54 +312,52 @@ public class WlanFrameDecoder {
 			case WlanFrameType.DATA_FRAME_TYPE:
 				switch (frameControl.getSubType()) {
 					case WlanFrameSubType.DATA_FRAME:
-						wlanFrame = new DataFrame(byteBuffer, frameControl);
+						wlanFrame = new DataFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_ACK:
-						wlanFrame = new DataFrame(byteBuffer, frameControl);
+						wlanFrame = new DataFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_POLL:
-						wlanFrame = new DataFrame(byteBuffer, frameControl);
+						wlanFrame = new DataFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.DATA_CONTENTION_FREE_ACK_PLUS_POLL:
-						wlanFrame = new DataFrame(byteBuffer, frameControl);
+						wlanFrame = new DataFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.DATA_NULL_FRAME:
-						wlanFrame = new NullFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new NullFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_ACK:
-						wlanFrame = new DataFrame(byteBuffer, frameControl);
+						wlanFrame = new DataFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_POLL:
-						wlanFrame = new DataFrame(byteBuffer,frameControl);
+						wlanFrame = new DataFrame(byteBuffer,this);
 						break;
 					case WlanFrameSubType.CONTENTION_FREE_ACK_PLUS_POLL:
-						wlanFrame = new DataFrame(byteBuffer,frameControl);
+						wlanFrame = new DataFrame(byteBuffer,this);
 						break;
 					case WlanFrameSubType.DATA_QOS_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer, frameControl);
+						wlanFrame = new QosDataFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_ACK_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer, frameControl);
+						wlanFrame = new QosDataFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_POLL_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
+						wlanFrame = new QosDataFrame(byteBuffer,this);
 						break;
 					case WlanFrameSubType.DATA_QOS_CONTENTION_FREE_ACK_PLUS_POLL_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
+						wlanFrame = new QosDataFrame(byteBuffer,this);
 						break;
 					case WlanFrameSubType.DATA_QOS_NULL_FRAME:
-						wlanFrame = new NullFrame(byteBuffer, frameControl.isToDS(),
-								frameControl.isFromDS());
+						wlanFrame = new NullFrame(byteBuffer, this);
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_ACK_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
+						wlanFrame = new QosDataFrame(byteBuffer,this);
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_POLL_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
+						wlanFrame = new QosDataFrame(byteBuffer,this);
 						break;
 					case WlanFrameSubType.QOS_CONTENTION_FREE_ACK_PLUS_POLL_FRAME:
-						wlanFrame = new QosDataFrame(byteBuffer,frameControl);
+						wlanFrame = new QosDataFrame(byteBuffer,this);
 						break;
 				}
 				break;
@@ -361,5 +370,9 @@ public class WlanFrameDecoder {
 
 	public IWlanFrame getWlanFrame() {
 		return wlanFrame;
+	}
+
+	public WlanDecoder getWlanDecoder() {
+		return wlanDecoder;
 	}
 }

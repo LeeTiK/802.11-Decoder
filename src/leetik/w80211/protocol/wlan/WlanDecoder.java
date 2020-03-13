@@ -86,18 +86,12 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 			if (DISPLAY_ERROR) System.out.println("ERROR PARSING RADIOTAP");
 		}
 
-		if (radioTap.getRadioTapDataLength()>0)
-		{
-			wlan802dot11Decode(dataFrame,radioTap.getRadioTapData().getFlags().isFCSatEnd());
-		}
-		else {
-			wlan802dot11Decode(dataFrame,false);
-		}
+		wlan802dot11Decode(dataFrame);
 	}
 
 	public void decode(boolean fcs) {
 		// decode w80211 protocol
-		wlan802dot11Decode(dataFrame,fcs);
+		wlan802dot11Decode(dataFrame);
 	}
 
 	/**
@@ -114,9 +108,9 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 	}
 
 
-	public void wlan802dot11Decode(ByteBuffer frame, boolean fcs) {
+	public void wlan802dot11Decode(ByteBuffer frame) {
 		if ((frame.remaining()) >= 0) {
-			wlan802dot11 = new WlanFrameDecoder(frame,fcs);
+			wlan802dot11 = new WlanFrameDecoder(frame,this);
 		} else {
 			System.err.println("An error occured while decoding w80211 frame");
 		}
@@ -155,4 +149,7 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 		return wlan802dot11.getWlanFrame();
 	}
 
+	public ByteBuffer getDataFrame() {
+		return dataFrame;
+	}
 }

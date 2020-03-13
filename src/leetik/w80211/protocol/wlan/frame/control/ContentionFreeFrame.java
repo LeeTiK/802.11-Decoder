@@ -1,5 +1,6 @@
 package leetik.w80211.protocol.wlan.frame.control;
 
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
 import leetik.w80211.protocol.wlan.frame.IWlanFrame;
 import leetik.w80211.protocol.wlan.frame.control.inter.IContentionFreeFrame;
 import leetik.w80211.protocol.wlan.inter.IWlanControlFrame;
@@ -86,4 +87,8 @@ public class ContentionFreeFrame implements IWlanFrame, IWlanControlFrame, ICont
 		return durationId;
 	}
 
+	@Override
+	public WlanFrameDecoder getWlanDecoder() {
+		return null;
+	}
 }

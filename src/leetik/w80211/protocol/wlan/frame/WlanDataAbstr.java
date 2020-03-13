@@ -24,6 +24,9 @@
 package leetik.w80211.protocol.wlan.frame;
 
 
+import leetik.w80211.protocol.wlan.WlanDecoder;
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -44,6 +47,7 @@ import java.nio.ByteBuffer;
  */
 public abstract class WlanDataAbstr implements IWlanDataFrame, IWlanFrame {
 
+	private WlanFrameDecoder wlanDecoder;
 	/**
 	 * duration id value
 	 */
@@ -168,7 +172,10 @@ public abstract class WlanDataAbstr implements IWlanDataFrame, IWlanFrame {
 		}
 	}
 
-	public WlanDataAbstr(ByteBuffer byteBuffer, boolean toDS, boolean fromDS) {
+	public WlanDataAbstr(ByteBuffer byteBuffer, WlanFrameDecoder wlanDecoder) {
+		this.wlanDecoder = wlanDecoder;
+		boolean toDS = wlanDecoder.getFrameControl().isToDS(), fromDS = wlanDecoder.getFrameControl().isFromDS();
+
 		if (byteBuffer.remaining() >= 22) {
 			int position = byteBuffer.position();
 
@@ -299,4 +306,70 @@ public abstract class WlanDataAbstr implements IWlanDataFrame, IWlanFrame {
 		return receiverAddr;
 	}
 
+	public byte getFragmentNumber(){
+		return (byte) (getSequenceControl()[0] & 0x0F);
+	}
+
+	public short getSequenceNumber(){
+		return (short) ((getSequenceControl()[1] << 4) + ((getSequenceControl()[0] &0xF0) >> 4));
+	}
+
+	public WlanFrameDecoder getWlanDecoder() {
+		return wlanDecoder;
+	}
+
+	public byte[] getAddr(int number)
+	{
+		switch (number)
+		{
+			case 1:
+				if (!wlanDecoder.getFrameControl().isToDS() && !wlanDecoder.getFrameControl().isFromDS()) {
+					return destinationAddr;
+				}
+				if (!wlanDecoder.getFrameControl().isToDS() && wlanDecoder.getFrameControl().isFromDS()) {
+					return destinationAddr;
+				}
+				if (wlanDecoder.getFrameControl().isToDS() && !wlanDecoder.getFrameControl().isFromDS()) {
+					return bssid;
+				}
+				if (wlanDecoder.getFrameControl().isToDS() && wlanDecoder.getFrameControl().isFromDS()) {
+					return receiverAddr;
+				}
+				break;
+			case 2:
+				if (!wlanDecoder.getFrameControl().isToDS() && !wlanDecoder.getFrameControl().isFromDS()) {
+					return sourceAddr;
+				}
+				if (!wlanDecoder.getFrameControl().isToDS() && wlanDecoder.getFrameControl().isFromDS()) {
+					return bssid;
+				}
+				if (wlanDecoder.getFrameControl().isToDS() && !wlanDecoder.getFrameControl().isFromDS()) {
+					return sourceAddr;
+				}
+				if (wlanDecoder.getFrameControl().isToDS() && wlanDecoder.getFrameControl().isFromDS()) {
+					return transmitterAddr;
+				}
+				break;
+			case 3:
+				if (!wlanDecoder.getFrameControl().isToDS() && !wlanDecoder.getFrameControl().isFromDS()) {
+					return bssid;
+				}
+				if (!wlanDecoder.getFrameControl().isToDS() && wlanDecoder.getFrameControl().isFromDS()) {
+					return sourceAddr;
+				}
+				if (wlanDecoder.getFrameControl().isToDS() && !wlanDecoder.getFrameControl().isFromDS()) {
+					return destinationAddr;
+				}
+				if (wlanDecoder.getFrameControl().isToDS() && wlanDecoder.getFrameControl().isFromDS()) {
+					return destinationAddr;
+				}
+				break;
+			case 4:
+				if (wlanDecoder.getFrameControl().isToDS() && wlanDecoder.getFrameControl().isFromDS()) {
+					return sourceAddr;
+				}
+				break;
+		}
+		return null;
+	}
 }

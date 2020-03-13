@@ -1,5 +1,6 @@
 package leetik.w80211.protocol.wlan.frame.control;
 
+import leetik.w80211.protocol.wlan.WlanFrameDecoder;
 import leetik.w80211.protocol.wlan.frame.IWlanFrame;
 import leetik.w80211.protocol.wlan.frame.control.inter.IackFrame;
 import leetik.w80211.protocol.wlan.inter.IWlanControlFrame;
@@ -70,4 +71,8 @@ public class AckFrame implements IWlanFrame, IWlanControlFrame, IackFrame {
 	}
 
 
+	@Override
+	public WlanFrameDecoder getWlanDecoder() {
+		return null;
+	}
 }
