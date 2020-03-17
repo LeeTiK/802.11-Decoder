@@ -26,7 +26,7 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 
 	private byte[] data;
 
-	private byte[] parametersCCMP;
+	private byte[] parametersCCMP = null;
 
 	LogicalLinkControl logicalLinkControl = null;
 
@@ -90,6 +90,10 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 	@Override
 	public byte[] getData() {
 		return data;
+	}
+
+	public byte[] getParametersCCMP() {
+		return parametersCCMP;
 	}
 
 	public Object getDataObject() {
