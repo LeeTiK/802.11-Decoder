@@ -3,7 +3,7 @@ package leetik.w80211.protocol.wlan.frame.management;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import leetik.w80211.protocol.wlan.WlanFrameDecoder;
+import leetik.w80211.protocol.wlan.WlanFramePacket;
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
@@ -115,7 +115,7 @@ public class ProbeResponseFrame extends WlanManagementAbstr implements IProbeRes
 	}
 
 	@Override
-	public WlanFrameDecoder getWlanDecoder() {
+	public WlanFramePacket getWlanDecoder() {
 		return null;
 	}
 }

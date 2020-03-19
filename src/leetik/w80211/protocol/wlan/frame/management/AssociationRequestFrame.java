@@ -3,12 +3,11 @@ package leetik.w80211.protocol.wlan.frame.management;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import leetik.w80211.protocol.wlan.WlanFrameDecoder;
+import leetik.w80211.protocol.wlan.WlanFramePacket;
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
 import leetik.w80211.protocol.wlan.frame.management.inter.IAssociationRequestFrame;
-import leetik.w80211.utils.ByteUtils;
 
 /**
  * Management frame - Association frame<br/>
@@ -108,7 +107,7 @@ public class AssociationRequestFrame extends WlanManagementAbstr implements IAss
 	}
 
 	@Override
-	public WlanFrameDecoder getWlanDecoder() {
+	public WlanFramePacket getWlanDecoder() {
 		return null;
 	}
 }

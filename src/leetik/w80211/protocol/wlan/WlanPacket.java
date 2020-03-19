@@ -40,7 +40,7 @@ import java.nio.ByteOrder;
  * @author Bertrand Martel
  * 
  */
-public class WlanDecoder implements IWlan802dot11Radiotap {
+public class WlanPacket implements IWlan802dot11Radiotap {
 
 	public static boolean DISPLAY_ELEMENT_NOT_DECODED = false;
 
@@ -55,7 +55,7 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 	/**
 	 * w80211 frame object
 	 */
-	private WlanFrameDecoder wlan802dot11 = null;
+	private WlanFramePacket wlan802dot11 = null;
 
 	//private byte[] dataFrame = null;
 
@@ -64,7 +64,7 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 	/**
 	 * initialize w80211 driver
 	 */
-	public WlanDecoder(byte[] dataFrame) {
+	public WlanPacket(byte[] dataFrame) {
 		this.dataFrame = OtherUtils.createByteBuffer(dataFrame.length);
 
 		this.dataFrame.put(dataFrame);
@@ -110,7 +110,7 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 
 	public void wlan802dot11Decode(ByteBuffer frame) {
 		if ((frame.remaining()) >= 0) {
-			wlan802dot11 = new WlanFrameDecoder(frame,this);
+			wlan802dot11 = new WlanFramePacket(frame,this);
 		} else {
 			System.err.println("An error occured while decoding w80211 frame");
 		}
@@ -128,7 +128,7 @@ public class WlanDecoder implements IWlan802dot11Radiotap {
 		if ((frame.length - offset) >= 0) {
 			byte[] frameWlan = new byte[frame.length - offset];
 			System.arraycopy(frame, offset, frameWlan, 0, frame.length - offset);
-			wlan802dot11 = new WlanFrameDecoder(frameWlan);
+			wlan802dot11 = new WlanFramePacket(frameWlan);
 		} else {
 			System.err.println("An error occured while decoding w80211 frame");
 		}

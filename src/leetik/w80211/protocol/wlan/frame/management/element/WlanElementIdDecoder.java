@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import leetik.w80211.protocol.wlan.WlanDecoder;
+import leetik.w80211.protocol.wlan.WlanPacket;
 import leetik.w80211.protocol.wlan.frame.management.element.impl.*;
 
 /**
@@ -74,7 +74,7 @@ public class WlanElementIdDecoder {
 					element = new DsParameterSetElement(treatedFrame);
 					break;
 				}
-				if (!done && WlanDecoder.DISPLAY_ELEMENT_NOT_DECODED)
+				if (!done && WlanPacket.DISPLAY_ELEMENT_NOT_DECODED)
 				{
 					System.out.println("Element id not decoded => " + (elementId & 0XFF));
 				}
@@ -155,7 +155,7 @@ public class WlanElementIdDecoder {
 					default:
 						throw new IllegalStateException("Unexpected value: " + EWlanElementID);
 				}
-				if (EWlanElementID == leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID.NOT_DECODED && WlanDecoder.DISPLAY_ELEMENT_NOT_DECODED)
+				if (EWlanElementID == leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID.NOT_DECODED && WlanPacket.DISPLAY_ELEMENT_NOT_DECODED)
 				{
 					System.out.println("Element id not decoded => " + (EWlanElementID.getTagNumber() & 0XFF));
 				}

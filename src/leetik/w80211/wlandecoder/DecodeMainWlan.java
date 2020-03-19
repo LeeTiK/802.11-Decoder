@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import fr.bmartel.pcapdecoder.PcapDecoder;
 import fr.bmartel.pcapdecoder.structure.types.inter.IEnhancedPacketBLock;
 import fr.bmartel.pcapdecoder.utils.DecoderStatus;
-import leetik.w80211.protocol.wlan.WlanDecoder;
+import leetik.w80211.protocol.wlan.WlanPacket;
 import leetik.w80211.protocol.wlan.inter.IWlan802dot11Radiotap;
 
 /**
@@ -116,7 +116,7 @@ public class DecodeMainWlan {
 							
 							IEnhancedPacketBLock packet = (IEnhancedPacketBLock) pcapNgDecoder.getSectionList().get(i);
 
-							WlanDecoder dataDecode = new WlanDecoder(packet.getPacketData());
+							WlanPacket dataDecode = new WlanPacket(packet.getPacketData());
 							dataDecode.decodeWithRadiotap();
 							wlanDecodedFrameList.add(dataDecode);
 						}

@@ -1,7 +1,6 @@
 package leetik.w80211.protocol.wlan.frame;
 
-import leetik.w80211.protocol.wlan.WlanDecoder;
-import leetik.w80211.protocol.wlan.WlanFrameDecoder;
+import leetik.w80211.protocol.wlan.WlanFramePacket;
 
 /**
  * Basic interface for standard Wlan frame => data/management or control frame
@@ -10,5 +9,5 @@ import leetik.w80211.protocol.wlan.WlanFrameDecoder;
  * 
  */
 public interface IWlanFrame {
-    public WlanFrameDecoder getWlanDecoder();
+    public WlanFramePacket getWlanDecoder();
 }

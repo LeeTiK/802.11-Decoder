@@ -1,9 +1,8 @@
 package leetik.w80211.protocol.wlan.frame.data;
 
-import leetik.w80211.protocol.wlan.WlanFrameDecoder;
+import leetik.w80211.protocol.wlan.WlanFramePacket;
 import leetik.w80211.protocol.wlan.frame.WlanDataAbstr;
 import leetik.w80211.protocol.wlan.frame.data.inter.IDataFrame;
-import leetik.w80211.protocol.wlan.inter.IWlanFrameControl;
 
 import java.nio.ByteBuffer;
 
@@ -35,10 +34,10 @@ public class DataFrame extends WlanDataAbstr implements IDataFrame {
 		super(frame, toDS, fromDS);
 	}
 
-	public DataFrame(ByteBuffer byteBuffer, WlanFrameDecoder wlanFrameDecoder) {
-		super(byteBuffer, wlanFrameDecoder);
+	public DataFrame(ByteBuffer byteBuffer, WlanFramePacket wlanFramePacket) {
+		super(byteBuffer, wlanFramePacket);
 
-		if (wlanFrameDecoder.getFrameControl().isWep()) {
+		if (wlanFramePacket.getFrameControl().isWep()) {
 			if (byteBuffer.remaining() <= 8) return;
 
 			parametersCCMP = new byte[8];

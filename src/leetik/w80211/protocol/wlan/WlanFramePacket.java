@@ -57,13 +57,13 @@ import java.nio.ByteBuffer;
  * @author Bertrand Martel
  * 
  */
-public class WlanFrameDecoder {
+public class WlanFramePacket {
 
 	/**
 	 * contains control information used for defining the type of 802.11 MAC
 	 * frame and providing information
 	 */
-	WlanDecoder wlanDecoder;
+	WlanPacket wlanPacket;
 
 	private IWlanFrameControl frameControl = null;
 
@@ -79,7 +79,7 @@ public class WlanFrameDecoder {
 	 *            byte array data
 	 */
 	@Deprecated
-	public WlanFrameDecoder(byte[] frame) {
+	public WlanFramePacket(byte[] frame) {
 
 		frameControl = new WlanFrameControl(new byte[] { frame[0], frame[1] });
 
@@ -219,17 +219,17 @@ public class WlanFrameDecoder {
 		}
 	}
 
-	public WlanFrameDecoder(ByteBuffer byteBuffer, WlanDecoder wlanDecoder) {
+	public WlanFramePacket(ByteBuffer byteBuffer, WlanPacket wlanPacket) {
 
-		this.wlanDecoder = wlanDecoder;
+		this.wlanPacket = wlanPacket;
 
 		frameControl = new WlanFrameControl(byteBuffer.getShort());
 
 		boolean fcs = false;
 
-		if (wlanDecoder.getRadioTap().getRadioTapDataLength()>0)
+		if (wlanPacket.getRadioTap().getRadioTapDataLength()>0)
 		{
-			fcs = wlanDecoder.getRadioTap().getRadioTapData().getFlags().isFCSatEnd();
+			fcs = wlanPacket.getRadioTap().getRadioTapData().getFlags().isFCSatEnd();
 		}
 
 		if (fcs)
@@ -372,7 +372,7 @@ public class WlanFrameDecoder {
 		return wlanFrame;
 	}
 
-	public WlanDecoder getWlanDecoder() {
-		return wlanDecoder;
+	public WlanPacket getWlanPacket() {
+		return wlanPacket;
 	}
 }

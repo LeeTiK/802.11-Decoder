@@ -1,7 +1,6 @@
 package leetik.w80211.protocol.authentication;
 
-import leetik.w80211.protocol.wlan.WlanDecoder;
-import leetik.w80211.protocol.wlan.WlanFrameDecoder;
+import leetik.w80211.protocol.wlan.WlanFramePacket;
 import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class AuthenticationDecoder {
 
-    private WlanFrameDecoder wlanDecoder;
+    private WlanFramePacket wlanDecoder;
 
     byte version;
 
@@ -40,7 +39,9 @@ public class AuthenticationDecoder {
 
     List<IWlanElement> taggedParameter;
 
-    public AuthenticationDecoder(WlanFrameDecoder wlanDecoder, ByteBuffer byteBuffer) {
+    byte[] frame;
+
+    public AuthenticationDecoder(WlanFramePacket wlanDecoder, ByteBuffer byteBuffer) {
         decode(byteBuffer);
 
         this.wlanDecoder = wlanDecoder;
@@ -175,7 +176,7 @@ public class AuthenticationDecoder {
        // return false;
     }
 
-    public WlanFrameDecoder getWlanFrameDecoder() {
+    public WlanFramePacket getWlanFrameDecoder() {
         return wlanDecoder;
     }
 }

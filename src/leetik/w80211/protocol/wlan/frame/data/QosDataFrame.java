@@ -2,12 +2,9 @@ package leetik.w80211.protocol.wlan.frame.data;
 
 import leetik.w80211.protocol.authentication.AuthenticationDecoder;
 import leetik.w80211.protocol.other.LogicalLinkControl;
-import leetik.w80211.protocol.wlan.WlanDecoder;
-import leetik.w80211.protocol.wlan.WlanFrameControl;
-import leetik.w80211.protocol.wlan.WlanFrameDecoder;
+import leetik.w80211.protocol.wlan.WlanFramePacket;
 import leetik.w80211.protocol.wlan.frame.WlanDataAbstr;
 import leetik.w80211.protocol.wlan.frame.data.inter.IQosDataFrame;
-import leetik.w80211.protocol.wlan.inter.IWlanFrameControl;
 
 import java.nio.ByteBuffer;
 
@@ -48,7 +45,7 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 		qosControl = new byte[] { getFrameBody()[1], getFrameBody()[0] };
 	}
 
-	public QosDataFrame(ByteBuffer byteBuffer, WlanFrameDecoder wlanDecoder) {
+	public QosDataFrame(ByteBuffer byteBuffer, WlanFramePacket wlanDecoder) {
 		super(byteBuffer, wlanDecoder);
 
 		qosControl = new byte[2];
