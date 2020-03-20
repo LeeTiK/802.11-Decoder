@@ -5,7 +5,9 @@ import java.util.List;
 
 import leetik.w80211.protocol.wlan.WlanFramePacket;
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
+import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
+import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
 import leetik.w80211.protocol.wlan.frame.management.inter.IProbeResponseFrame;
 
@@ -116,6 +118,17 @@ public class ProbeResponseFrame extends WlanManagementAbstr implements IProbeRes
 
 	@Override
 	public WlanFramePacket getWlanDecoder() {
+		return null;
+	}
+
+	public WlanElementAbstr getTaggedParameter(EWlanElementID EWlanElementID){
+		if (taggedParameter==null) return null;
+
+		for (int i=0; i<taggedParameter.size(); i++)
+		{
+			if (taggedParameter.get(i).getWlanElementId()== EWlanElementID) return (WlanElementAbstr) taggedParameter.get(i);
+		}
+
 		return null;
 	}
 }

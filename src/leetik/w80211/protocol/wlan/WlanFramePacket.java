@@ -26,12 +26,7 @@ package leetik.w80211.protocol.wlan;
 import leetik.w80211.protocol.wlan.constant.WlanFrameSubType;
 import leetik.w80211.protocol.wlan.constant.WlanFrameType;
 import leetik.w80211.protocol.wlan.frame.IWlanFrame;
-import leetik.w80211.protocol.wlan.frame.control.AckFrame;
-import leetik.w80211.protocol.wlan.frame.control.ClearToSendFrame;
-import leetik.w80211.protocol.wlan.frame.control.ContentionFreeFrame;
-import leetik.w80211.protocol.wlan.frame.control.ContentionFreeReceiveAckFrame;
-import leetik.w80211.protocol.wlan.frame.control.PowerSavePollingFrame;
-import leetik.w80211.protocol.wlan.frame.control.RequestToSendFrame;
+import leetik.w80211.protocol.wlan.frame.control.*;
 import leetik.w80211.protocol.wlan.frame.data.DataFrame;
 import leetik.w80211.protocol.wlan.frame.data.NullFrame;
 import leetik.w80211.protocol.wlan.frame.data.QosDataFrame;
@@ -289,6 +284,12 @@ public class WlanFramePacket {
 			case WlanFrameType.CONTROL_FRAME_TYPE:
 
 				switch (frameControl.getSubType()) {
+					case WlanFrameSubType.CONTROL_BLOCK_ACK_REQ:
+						wlanFrame = new BlockAckReq(byteBuffer);
+						break;
+					case WlanFrameSubType.CONTROL_BLOCK_ACK:
+						wlanFrame = new BlockAck(byteBuffer);
+						break;
 					case WlanFrameSubType.CONTROL_POWER_SAVE_POLLING_PACKET:
 						wlanFrame = new PowerSavePollingFrame(byteBuffer);
 						break;
