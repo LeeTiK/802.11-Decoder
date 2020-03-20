@@ -23,6 +23,8 @@ public class WlanFrameSubType {
 	public final static byte MANAGEMENT_AUTHENTICATION_FRAME = 0x0B;
 	public final static byte MANAGEMENT_DEAUTHENTICATION_FRAME = 0x0C;
 
+	public final static byte CONTROL_BLOCK_ACK_REQ = 0x08;
+	public final static byte CONTROL_BLOCK_ACK = 0x09;
 	public final static byte CONTROL_POWER_SAVE_POLLING_PACKET = 0x0A;
 	public final static byte CONTROL_REQUEST_TO_SEND = 0x0B;
 	public final static byte CONTROL_CLEAR_TO_SEND = 0x0C;
