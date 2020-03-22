@@ -16,6 +16,4 @@ package leetik.w80211.protocol.wlan.frame.management.element.inter;
 public interface IDsssParameterSetElement {
 
 	public int getCurrentChannel();
-	
-	public int getFrequency();
 }

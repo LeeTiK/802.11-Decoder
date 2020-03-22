@@ -142,13 +142,15 @@ public class WlanElementIdDecoder {
 						element = new HTCapabilitiesElement(treatedFrame);
 						break;
 					case RSN_INFORMATION:
-						element = new RsnInformation(treatedFrame);
+						element = new RsnInformationElement(treatedFrame);
 						break;
 					case EXTENDED_SUPPORTED_RATE:
 						element = new ExtendedSupportedRateElement(treatedFrame);
 						break;
 					case VENDOR_SPECIFIC:
 						element = new VendorSpecificElement(treatedFrame);
+						break;
+					case HT_INFORMATION:
 						break;
 					case NOT_DECODED:
 						break;

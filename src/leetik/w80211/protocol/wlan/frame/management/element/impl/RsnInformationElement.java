@@ -6,7 +6,7 @@ import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-public class RsnInformation extends WlanElementAbstr {
+public class RsnInformationElement extends WlanElementAbstr {
 
     short version;
     byte groupCipherSuite;
@@ -19,11 +19,11 @@ public class RsnInformation extends WlanElementAbstr {
 
 
     @Deprecated
-    public RsnInformation(byte[] data) {
+    public RsnInformationElement(byte[] data) {
         super(data);
     }
 
-    public RsnInformation(ByteBuffer byteBuffer, byte[] data)
+    public RsnInformationElement(ByteBuffer byteBuffer, byte[] data)
     {
         super(data);
 

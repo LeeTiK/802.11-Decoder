@@ -25,8 +25,6 @@ public class DsParameterSetElement extends WlanElementAbstr implements IDsssPara
 	 */
 	private int currentChannel = 0x00;
 
-	private int frequency = -1;
-
 	/**
 	 * 
 	 * @param length
@@ -36,62 +34,12 @@ public class DsParameterSetElement extends WlanElementAbstr implements IDsssPara
 		super(data);
 		currentChannel = data[0] & 0xFF;
 
-		switch (frequency) {
-		case 1:
-			frequency = 2412;
-			break;
-		case 2:
-			frequency = 2417;
-			break;
-		case 3:
-			frequency = 2422;
-			break;
-		case 4:
-			frequency = 2427;
-			break;
-		case 5:
-			frequency = 2432;
-			break;
-		case 6:
-			frequency = 2437;
-			break;
-		case 7:
-			frequency = 2442;
-			break;
-		case 8:
-			frequency = 2447;
-			break;
-		case 9:
-			frequency = 2452;
-			break;
-		case 10:
-			frequency = 2457;
-			break;
-		case 11:
-			frequency = 2462;
-			break;
-		case 12:
-			frequency = 2467;
-			break;
-		case 13:
-			frequency = 2472;
-			break;
-		case 14:
-			frequency = 2484;
-			break;
-		}
 	}
 
 	@Override
 	public int getCurrentChannel()
 	{
 		return currentChannel;
-	}
-	
-	@Override
-	public int getFrequency()
-	{
-		return frequency;
 	}
 
 	@Override
