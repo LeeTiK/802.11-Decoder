@@ -3,8 +3,10 @@ package leetik.w80211.protocol.wlan.frame.management.element.impl;
 import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.subelement.HTInformationSubsetOne;
+import leetik.w80211.protocol.wlan.utils.OtherUtils;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class HTInformationElement extends WlanElementAbstr {
 
@@ -19,11 +21,12 @@ public class HTInformationElement extends WlanElementAbstr {
     @Deprecated
     public HTInformationElement(byte[] data) {
         super(data);
-    }
 
-    public HTInformationElement(ByteBuffer byteBuffer, byte[] data)
-    {
-        super(data);
+        ByteBuffer byteBuffer = OtherUtils.createByteBuffer(data.length);
+
+        byteBuffer.put(data);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.flip();
 
         channel = byteBuffer.get();
 
@@ -33,7 +36,6 @@ public class HTInformationElement extends WlanElementAbstr {
 
         hTInformationSubsetThree = byteBuffer.getShort();
     }
-
 
     @Override
     public byte getElementId() {

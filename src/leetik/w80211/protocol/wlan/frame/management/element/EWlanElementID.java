@@ -13,6 +13,7 @@ public enum EWlanElementID {
     EXTENDED_SUPPORTED_RATE(50),
 
     HT_INFORMATION(61),
+    VHT_OPERATION(192),
     VENDOR_SPECIFIC(221),
     NOT_DECODED((byte)0xFF);
 

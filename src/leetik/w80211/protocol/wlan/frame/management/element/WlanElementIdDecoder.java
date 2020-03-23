@@ -151,11 +151,14 @@ public class WlanElementIdDecoder {
 						element = new VendorSpecificElement(treatedFrame);
 						break;
 					case HT_INFORMATION:
+						element = new HTInformationElement(treatedFrame);
+						break;
+					case VHT_OPERATION:
+						element = new VHTOperationElement(treatedFrame);
 						break;
 					case NOT_DECODED:
-						break;
 					default:
-						throw new IllegalStateException("Unexpected value: " + EWlanElementID);
+						break;
 				}
 				if (EWlanElementID == leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID.NOT_DECODED && WlanPacket.DISPLAY_ELEMENT_NOT_DECODED)
 				{

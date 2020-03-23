@@ -296,7 +296,7 @@ public class DisplayDecodingInfo {
 		{
 			IDsssParameterSetElement element = (IDsssParameterSetElement)elementList;
 			System.out.println(tab+tab+tab+tab+"currentChannel : "+ element.getCurrentChannel());
-			System.out.println(tab+tab+tab+tab+"frequency      : " + element.getFrequency());
+			//System.out.println(tab+tab+tab+tab+"frequency      : " + element.getFrequency());
 		}
 		else if (elementList instanceof IErpElement)
 		{
