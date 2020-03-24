@@ -29,6 +29,4 @@ public interface IBeaconFrame {
 	
 	public CapabilitiesInformation getCapabilityInfo() ;
 	
-	public List<IWlanElement> getTaggedParameter();
-	
 }

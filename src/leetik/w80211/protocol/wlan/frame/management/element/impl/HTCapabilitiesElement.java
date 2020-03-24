@@ -71,7 +71,7 @@ public class HTCapabilitiesElement extends WlanElementAbstr implements IHtCapabi
 
 	@Override
 	public EWlanElementID getWlanElementId() {
-		return null;
+		return EWlanElementID.HT_CAPABILITIES;
 	}
 
 	@Override

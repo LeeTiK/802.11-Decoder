@@ -10,6 +10,7 @@ import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
 import leetik.w80211.protocol.wlan.frame.management.inter.IProbeResponseFrame;
+import leetik.w80211.protocol.wlan.frame.management.inter.ITaggedFrame;
 
 /**
  * Probe response management frame decoder<br/>
@@ -23,7 +24,7 @@ import leetik.w80211.protocol.wlan.frame.management.inter.IProbeResponseFrame;
  * @author Bertrand Martel
  * 
  */
-public class ProbeResponseFrame extends WlanManagementAbstr implements IProbeResponseFrame {
+public class ProbeResponseFrame extends WlanManagementAbstr implements IProbeResponseFrame, ITaggedFrame {
 
 	/**
 	 * timestamp value for this frame (for sync)

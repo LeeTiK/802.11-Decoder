@@ -129,9 +129,9 @@ public class DisplayDecodingInfo {
 					System.out.println(tab+tab+"beaconInterval         : "+ beaconFrame.getBeaconInterval());
 					System.out.println(tab+tab+"capability information : "+ beaconFrame.getCapabilityInfo().getCapabilitiesinfo());
 					
-					for (int j = 0; j< beaconFrame.getTaggedParameter().size(); j++) {
+				/*	for (int j = 0; j< beaconFrame.getTaggedParameter().size(); j++) {
 						displayTaggedParameter(beaconFrame.getTaggedParameter().get(j));
-					}
+					}*/
 				}
 				else if (wlanDecodedFrameList.get(i).getFrame() instanceof IDeauthenticationFrame)
 				{

@@ -33,7 +33,9 @@ public class RsnInformationElement extends WlanElementAbstr {
 
         version = byteBuffer.getShort();
 
-        if (byteBuffer.get()==0x00 && byteBuffer.get()==0x0F && byteBuffer.get() == 0xAC)
+        byte one = byteBuffer.get(), two = byteBuffer.get(), three = byteBuffer.get();
+
+        if (one==0x00 && two==0x0F && three == (byte) 0xAC)
         {
             groupCipherSuite = EChipherType.getEChipherType(byteBuffer.get());
         }
@@ -48,7 +50,9 @@ public class RsnInformationElement extends WlanElementAbstr {
 
         for (int i=0; i<pairwiseCipherSuiteCount; i++)
         {
-            if (byteBuffer.get()==0x00 && byteBuffer.get()==0x0F && byteBuffer.get() == 0xAC)
+            one = byteBuffer.get(); two = byteBuffer.get(); three = byteBuffer.get();
+
+            if (one==0x00 && two==0x0F && three == (byte)0xAC)
             {
                 pairwiseCipherSuiteArrayList.add(EChipherType.getEChipherType(byteBuffer.get()));
             }
@@ -63,7 +67,9 @@ public class RsnInformationElement extends WlanElementAbstr {
 
         for (int i=0; i<authenticationSuiteCount; i++)
         {
-            if (byteBuffer.get()==0x00 && byteBuffer.get()==0x0F && byteBuffer.get() == 0xAC)
+            one = byteBuffer.get(); two = byteBuffer.get(); three = byteBuffer.get();
+
+            if (one==0x00 && two==0x0F && three == (byte)0xAC)
             {
                 authenticationSuiteArrayList.add(EChipherType.getEChipherType(byteBuffer.get()));
             }

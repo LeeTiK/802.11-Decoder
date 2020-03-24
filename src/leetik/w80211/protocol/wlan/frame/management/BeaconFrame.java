@@ -1,6 +1,7 @@
 package leetik.w80211.protocol.wlan.frame.management;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 import leetik.w80211.protocol.wlan.frame.WlanManagementAbstr;
@@ -9,6 +10,7 @@ import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
 import leetik.w80211.protocol.wlan.frame.management.inter.IBeaconFrame;
+import leetik.w80211.protocol.wlan.frame.management.inter.ITaggedFrame;
 import leetik.w80211.protocol.wlan.frame.management.other.CapabilitiesInformation;
 
 /**
@@ -27,7 +29,7 @@ import leetik.w80211.protocol.wlan.frame.management.other.CapabilitiesInformatio
  * @author Bertrand Martel
  * 
  */
-public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
+public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame, ITaggedFrame {
 
 	/**
 	 * timestamp value for this frame (for sync)
@@ -106,8 +108,7 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame {
 	public CapabilitiesInformation getCapabilityInfo() {
 		return capabilityInfo;
 	}
-	
-	@Override
+
 	public List<IWlanElement> getTaggedParameter() {
 		return taggedParameter;
 	}
