@@ -35,31 +35,29 @@ public class VendorSpecificElement extends WlanElementAbstr {
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
         byteBuffer.flip();
 
-        if (byteBuffer.remaining()>3){
+        if (byteBuffer.remaining()>3) {
             byte[] bytes = new byte[3];
             byteBuffer.get(bytes);
             oui = EOUI.getOUI(bytes);
-        }
+            vendorSpecificOuiType = byteBuffer.get();
 
-        vendorSpecificOuiType = byteBuffer.get();
+            switch (oui) {
 
-        switch (oui){
+                case Ieee802_11:
 
-            case Ieee802_11:
+                    switch (vendorSpecificOuiType) {
+                        case 4:
+                            eVendorSpecificElementType = EVendorSpecificElementType.RSN_PMKID;
+                            element = new RsnPmkid(byteBuffer);
+                            break;
+                    }
 
-                switch (vendorSpecificOuiType)
-                {
-                    case 4:
-                        eVendorSpecificElementType = EVendorSpecificElementType.RSN_PMKID;
-                        element = new RsnPmkid(byteBuffer);
-                        break;
-                }
-
-                break;
-            case MicrosoftCorp:
-                break;
-            case NOT_DECODED:
-                break;
+                    break;
+                case MicrosoftCorp:
+                    break;
+                case NOT_DECODED:
+                    break;
+            }
         }
     }
 
