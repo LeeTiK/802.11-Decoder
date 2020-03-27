@@ -54,6 +54,12 @@ public class AuthenticationDecoder {
 
     private void decode(ByteBuffer byteBuffer){
         byteBuffer.order(ByteOrder.BIG_ENDIAN);
+
+        byteBuffer.mark();
+        frame = new byte[byteBuffer.remaining()];
+        byteBuffer.get(frame);
+        byteBuffer.reset();
+
         version = byteBuffer.get();
         type = byteBuffer.get();
         length = byteBuffer.getShort();
@@ -178,5 +184,9 @@ public class AuthenticationDecoder {
 
     public WlanFramePacket getWlanFrameDecoder() {
         return wlanDecoder;
+    }
+
+    public byte[] getFrame() {
+        return frame;
     }
 }
