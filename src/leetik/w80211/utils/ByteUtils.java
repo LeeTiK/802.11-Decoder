@@ -104,4 +104,14 @@ public class ByteUtils {
 		}
 		return ret;
 	}
+
+	public static boolean byteArrayCheckZero(final byte[] array) {
+		int hits = 0;
+		for (byte b : array) {
+			if (b != 0) {
+				hits++;
+			}
+		}
+		return (hits == 0);
+	}
 }

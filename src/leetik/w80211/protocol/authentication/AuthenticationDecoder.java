@@ -5,6 +5,7 @@ import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
+import leetik.w80211.utils.ByteUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -40,6 +41,8 @@ public class AuthenticationDecoder {
     List<IWlanElement> taggedParameter;
 
     byte[] frame;
+
+    byte messageNumber;
 
     public AuthenticationDecoder(WlanFramePacket wlanDecoder, ByteBuffer byteBuffer) {
         decode(byteBuffer);
@@ -89,6 +92,9 @@ public class AuthenticationDecoder {
 
         taggedParameter = WlanElementIdDecoder.decode(byteBuffer);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+
+        calculatedNumberMessage();
     }
 
     public byte getKeyDescriptorType() {
@@ -170,7 +176,7 @@ public class AuthenticationDecoder {
 
         AuthenticationDecoder authenticationDecoder = (AuthenticationDecoder) obj;
 
-        if (authenticationDecoder.getKeyInformation().getMessageNumber()!=this.getKeyInformation().getMessageNumber()) {
+        if (authenticationDecoder.getMessageNumber()!=this.getMessageNumber()) {
             return false;
         }
 
@@ -188,5 +194,37 @@ public class AuthenticationDecoder {
 
     public byte[] getFrame() {
         return frame;
+    }
+
+
+    private void calculatedNumberMessage() {
+        messageNumber = (byte) 0xFF;
+        if (!getKeyInformation().isInstall() && getKeyInformation().isKeyAck() && !getKeyInformation().isKetMic() && !getKeyInformation().isSecure())
+        {
+            messageNumber = 1;
+            return;
+        } else {
+            if (!getKeyInformation().isInstall() && !getKeyInformation().isKeyAck() && getKeyInformation().isKetMic() && !getKeyInformation().isSecure() && !ByteUtils.byteArrayCheckZero(getWpaKeyNonce()))
+            {
+                messageNumber = 2;
+                return;
+            } else {
+                if (getKeyInformation().isInstall() && getKeyInformation().isKeyAck() && getKeyInformation().isKetMic() && getKeyInformation().isSecure())
+                {
+                    messageNumber = 3;
+                    return;
+                } else {
+                    if (!getKeyInformation().isInstall() && !getKeyInformation().isKeyAck() && getKeyInformation().isKetMic() && getKeyInformation().isSecure())
+                    {
+                        messageNumber = 4;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public byte getMessageNumber() {
+        return messageNumber;
     }
 }

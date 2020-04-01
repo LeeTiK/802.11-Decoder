@@ -17,8 +17,6 @@ public class KeyInformation {
     boolean encryptedKeyData = false;
     boolean smkMessage = false;
 
-    byte messageNumber = 0;
-
     public KeyInformation(ByteBuffer byteBuffer)
     {
         short keyinfo = byteBuffer.getShort();
@@ -76,30 +74,6 @@ public class KeyInformation {
         {
             smkMessage = true;
         }
-
-        calculatedNumberMessage();
-    }
-
-    private void calculatedNumberMessage() {
-        if (!isInstall() && isKeyAck() && !isKetMic() && !isSecure())
-        {
-            messageNumber = 1;
-        } else {
-            if (!isInstall() && !isKeyAck() && isKetMic() && !isSecure())
-            {
-                messageNumber = 2;
-            } else {
-                if (isInstall() && isKeyAck() && isKetMic() && isSecure())
-                {
-                    messageNumber = 3;
-                } else {
-                    if (!isInstall() && !isKeyAck() && isKetMic() && isSecure())
-                    {
-                        messageNumber = 4;
-                    }
-                }
-            }
-        }
     }
 
     public boolean isEncryptedKeyData() {
@@ -144,10 +118,6 @@ public class KeyInformation {
 
     public byte getKeyType() {
         return keyType;
-    }
-
-    public byte getMessageNumber() {
-        return messageNumber;
     }
 
     public short getKeyinfo() {
