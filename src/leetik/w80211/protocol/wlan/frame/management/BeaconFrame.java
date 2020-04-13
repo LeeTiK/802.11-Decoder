@@ -9,6 +9,8 @@ import leetik.w80211.protocol.wlan.frame.management.element.IWlanElement;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementIdDecoder;
+import leetik.w80211.protocol.wlan.frame.management.element.impl.VendorSpecificElement;
+import leetik.w80211.protocol.wlan.frame.management.element.impl.vendorSpecific.EVendorSpecificElementType;
 import leetik.w80211.protocol.wlan.frame.management.inter.IBeaconFrame;
 import leetik.w80211.protocol.wlan.frame.management.inter.ITaggedFrame;
 import leetik.w80211.protocol.wlan.frame.management.other.CapabilitiesInformation;
@@ -119,6 +121,22 @@ public class BeaconFrame extends WlanManagementAbstr implements IBeaconFrame, IT
 		for (int i=0; i<taggedParameter.size(); i++)
 		{
 			if (taggedParameter.get(i).getWlanElementId()== EWlanElementID) return (WlanElementAbstr) taggedParameter.get(i);
+		}
+
+		return null;
+	}
+
+	public VendorSpecificElement getTaggedParameterVendorSpecific(EVendorSpecificElementType vendorSpecificElementType){
+		if (taggedParameter==null) return null;
+
+		for (int i=0; i<taggedParameter.size(); i++)
+		{
+			if (taggedParameter.get(i).getWlanElementId()== EWlanElementID.VENDOR_SPECIFIC) {
+				VendorSpecificElement vendorSpecificElement = (VendorSpecificElement) taggedParameter.get(i);
+				if (vendorSpecificElement.geteVendorSpecificElementType() == vendorSpecificElementType) {
+					return vendorSpecificElement;
+				}
+			}
 		}
 
 		return null;

@@ -71,6 +71,26 @@ public class RsnInformationElement extends WlanElementAbstr {
 
             if (one==0x00 && two==0x0F && three == (byte)0xAC)
             {
+                /*
+                case 0x01:
+							ap_cur->security |= AUTH_MGT;
+							break;
+						case 0x02:
+							ap_cur->security |= AUTH_PSK;
+							break;
+						case 0x06:
+						case 0x0d:
+							ap_cur->security |= AUTH_CMAC;
+							break;
+						case 0x08:
+							ap_cur->security |= AUTH_SAE;
+							break;
+						case 0x12:
+							ap_cur->security |= AUTH_OWE;
+							break;
+						default:
+							break;
+                 */
                 authenticationSuiteArrayList.add(EChipherType.getEChipherType(byteBuffer.get()));
             }
             else {

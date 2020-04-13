@@ -5,6 +5,7 @@ import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.impl.vendorSpecific.EOUI;
 import leetik.w80211.protocol.wlan.frame.management.element.impl.vendorSpecific.EVendorSpecificElementType;
 import leetik.w80211.protocol.wlan.frame.management.element.impl.vendorSpecific.RsnPmkid;
+import leetik.w80211.protocol.wlan.frame.management.element.impl.vendorSpecific.WPS;
 import leetik.w80211.protocol.wlan.utils.OtherUtils;
 
 import java.nio.ByteBuffer;
@@ -54,6 +55,13 @@ public class VendorSpecificElement extends WlanElementAbstr {
 
                     break;
                 case MicrosoftCorp:
+
+                    switch (vendorSpecificOuiType) {
+                        case 4:
+                            eVendorSpecificElementType = EVendorSpecificElementType.WPS;
+                            element = new WPS(byteBuffer);
+                            break;
+                    }
                     break;
                 case NOT_DECODED:
                     break;
