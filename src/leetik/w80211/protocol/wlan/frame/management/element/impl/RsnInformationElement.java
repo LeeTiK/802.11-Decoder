@@ -2,6 +2,7 @@ package leetik.w80211.protocol.wlan.frame.management.element.impl;
 
 import leetik.w80211.protocol.wlan.frame.management.element.WlanElementAbstr;
 import leetik.w80211.protocol.wlan.frame.management.element.EWlanElementID;
+import leetik.w80211.protocol.wlan.frame.management.element.subelement.EAuthenticationType;
 import leetik.w80211.protocol.wlan.frame.management.element.subelement.EChipherType;
 import leetik.w80211.protocol.wlan.utils.OtherUtils;
 
@@ -16,7 +17,7 @@ public class RsnInformationElement extends WlanElementAbstr {
     short pairwiseCipherSuiteCount;
     ArrayList<EChipherType> pairwiseCipherSuiteArrayList;
     short authenticationSuiteCount;
-    ArrayList<EChipherType> authenticationSuiteArrayList;
+    ArrayList<EAuthenticationType> authenticationSuiteArrayList;
     short rsnCapabilities;
     short pmkCount;
 
@@ -71,27 +72,29 @@ public class RsnInformationElement extends WlanElementAbstr {
 
             if (one==0x00 && two==0x0F && three == (byte)0xAC)
             {
-                /*
-                case 0x01:
-							ap_cur->security |= AUTH_MGT;
-							break;
-						case 0x02:
-							ap_cur->security |= AUTH_PSK;
-							break;
-						case 0x06:
-						case 0x0d:
-							ap_cur->security |= AUTH_CMAC;
-							break;
-						case 0x08:
-							ap_cur->security |= AUTH_SAE;
-							break;
-						case 0x12:
-							ap_cur->security |= AUTH_OWE;
-							break;
-						default:
-							break;
-                 */
-                authenticationSuiteArrayList.add(EChipherType.getEChipherType(byteBuffer.get()));
+                EAuthenticationType authenticationType = EAuthenticationType.NOT_DECODER;
+                switch (byteBuffer.get()) {
+                    case 0x01:
+                        authenticationType =  EAuthenticationType.MGT;
+                        break;
+                    case 0x02:
+                        authenticationType =  EAuthenticationType.PSK;
+                        break;
+                    case 0x06:
+                    case 0x0d:
+                        authenticationType =  EAuthenticationType.CMAC;
+                        break;
+                    case 0x08:
+                        authenticationType =  EAuthenticationType.SAE;
+                        break;
+                    case 0x12:
+                        authenticationType =  EAuthenticationType.OWE;
+                        break;
+                    default:
+                        break;
+                }
+
+                authenticationSuiteArrayList.add(authenticationType);
             }
             else {
                 decodeError = true;
@@ -113,7 +116,7 @@ public class RsnInformationElement extends WlanElementAbstr {
         return EWlanElementID.RSN_INFORMATION;
     }
 
-    public ArrayList<EChipherType> getAuthenticationSuiteArrayList() {
+    public ArrayList<EAuthenticationType> getAuthenticationSuiteArrayList() {
         return authenticationSuiteArrayList;
     }
 
