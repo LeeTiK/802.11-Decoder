@@ -67,6 +67,8 @@ public class AuthenticationDecoder {
         type = byteBuffer.get();
         length = byteBuffer.getShort();
 
+        if (type != 3) return;
+
         keyDescriptorType = byteBuffer.get();
         keyInformation = new KeyInformation(byteBuffer);
 
