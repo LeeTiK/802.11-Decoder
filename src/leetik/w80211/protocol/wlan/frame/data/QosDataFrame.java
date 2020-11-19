@@ -70,11 +70,12 @@ public class QosDataFrame extends WlanDataAbstr implements IQosDataFrame {
 
 		if (! wlanDecoder.getFrameControl().isWep()) {
 			byteBuffer.reset();
-			logicalLinkControl = new LogicalLinkControl(byteBuffer);
-			int k = logicalLinkControl.getType();
-			if (logicalLinkControl.getType()==0x888e)
-			{
-				dataObject= new AuthenticationDecoder(wlanDecoder,byteBuffer);
+			if (byteBuffer.remaining()>=8) {
+				logicalLinkControl = new LogicalLinkControl(byteBuffer);
+				int k = logicalLinkControl.getType();
+				if (logicalLinkControl.getType() == 0x888e) {
+					dataObject = new AuthenticationDecoder(wlanDecoder, byteBuffer);
+				}
 			}
 		}
 	}
