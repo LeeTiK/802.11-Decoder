@@ -20,6 +20,8 @@ public class LogicalLinkControl {
         DSAP = byteBuffer.get();
         SSAP = byteBuffer.get();
 
+        if (byteBuffer.remaining()<=0) return;
+
         controlField = byteBuffer.get();
 
         organizationCode = new byte[3];
